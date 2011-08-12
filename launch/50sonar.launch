@@ -1,0 +1,47 @@
+<launch>
+    <param name="RLim" value="0.0" />		<!-- Right limit for Heading in degrees -->
+    <param name="LLim" value="1.0" />		<!-- Right limit for Heading in degrees -->
+    <param name="heading" value="3200" />	<!-- NOT CURRENTLY IN USE - Heading in 1/16th of gradian -->
+    <param name="NBins" value="200.0" />	<!-- Number of bins -->
+    <param name="Range" value="50" />           <!-- in metres -->
+    <param name="ADInterval" value="0" />
+    <param name="GlitchCount" value="1" />      <!-- Number of repeated returns (+1 (from SonarPing.m)) to remove glitches -->
+    <param name="Threshold" value="1" />	<!-- Power level (0-250) above which sonar 'sees' a target -->
+    <param name="BlankDist" value="0.3" />	<!-- Blanking distance (probably in metres) -->
+ 
+    <!-- values specific to the MICRON, different values needed for SEAKING -->
+    <param name="headType" value="1" />         <!-- 29 for Seaking -->	 
+
+    <!-- values common to both -->
+    <param name="SID" value="255" />	      	<!-- Source transmission node -->
+    <param name="DID" value="2" />	      	<!-- Msg destination node -->
+    <param name="msgSeq" value="128" />	      	<!-- Default for this message -->
+    <param name="Node" value="255" />	      	<!-- Repeat of SID, NOT WHAT IT SAYS IN THE MANUAL -->
+
+    <!-- HdCtrl bytes - see sonarPing.m, manual or wiki (TO DO) for info on setting each bit-->
+    <!-- most significant bit = left most bit -->
+    <param name="HdCtrl1" value="00000101" type="str" />
+    <param name="HdCtrl2" value="00100011" type="str" />
+
+    <param name="DstHead" value="11" />	      	<!-- Set as DST head type -->
+    <param name="ADSpan" value="210" />	      	<!-- Not used in 8 bit mode -->
+    <param name="ADLow" value="0" />	      	<!-- Not used in 8 bit mode -->
+    <param name="IGainB1" value="84" />	      	<!-- Initial gain for channel 1 -->
+    <param name="IGainB2" value="84" />	      	<!-- Initial gain for channel 2 -->
+
+    <param name="moTime" value="25" />	      	<!-- High-speed limit of scanning motor 10 microseconds (NEEDS LOOKING AT) -->
+    <param name="step" value="30" />	      	<!-- Step resolution in 1/16th of a gradian (default 64)-->
+    <param name="MaxADBuf" value="500" />    	<!-- Default = 500 (No explanation given in sonarPing) -->
+    <param name="Lockout" value="100" />    	<!-- Blanking interval microseconds Default = 100 -->
+    <param name="MinorAxis" value="1600" />    	<!-- (No explanation given in sonarPing) Default = 1600 for single channel -->
+    <param name="MajorAxis" value="1" />    	<!-- (No explanation given in sonarPing) Default = 1 for single channel -->
+
+    <param name="Ctl2" value="0" />    		<!-- Extra control parameters (no other explanation in sonarPing)-->   
+
+
+    <!-- NODES ################################################ -->
+
+    <node name="sonar_node" pkg="localisation_sonar" type="sonar_node.py" />
+    <node name="sonar_detectobstacle" pkg="localisation_sonar" type="sonar_detectobstacle.py" output="screen"/>
+ 
+</launch>

@@ -1,0 +1,3 @@
+float32 transBearing
+float32 rangeToTarget
+float32 heading

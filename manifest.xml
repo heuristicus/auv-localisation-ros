@@ -1,0 +1,19 @@
+<package>
+  <description brief="loc_sonar">
+
+     loc_sonar
+
+  </description>
+  <author>Michal</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/loc_sonar</url>
+  <depend package="roscpp"/>
+  <depend package="std_msgs"/>
+  <depend package="rospy"/>
+  <rosdep name="python-numpy"/>
+
+
+</package>
+
+
