@@ -1,1 +1,13 @@
 uint16 length
+uint8 hdstat
+uint16 hd1
+uint16 hd2
+uint16 rng
+uint16 ad
+uint16 llim
+uint16 rlim
+uint16 step
+uint16 bear
+float32 beardeg
+uint16 nbins
+uint32[] bins

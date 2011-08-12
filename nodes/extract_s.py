@@ -20,62 +20,73 @@ def callback(msgData):
  
     #Byte 17:
     headstatus = msgData[16]
-    hdstat = headstatus
+    hdstat = int(headstatus)
+    data.hdstat = hdstat
+    #print hdstat
     #print 'head status', headstatus
 
     #Byte 19,20:
     hdctrl1 = msgData[18]
-    hd1 = hdctrl1
+    hd1 = int(hdctrl1)
+    data.hd1 = hd1
     #print 'HdCtrl bits (byte 1) - convert to binary and see manual for description:', hdctrl1
     hdctrl2 = msgData[19]
-    hd2 = hdctrl2
+    hd2 = int(hdctrl2)
+    data.hd2 = hd2
     #print 'HdCtrl bits (byte 2) - convert to binary and see manual for description:', hdctrl2
    
-
     #Byte 21,22:
     rangescale = uint8_to_uint16([msgData[20], msgData[21]])
     rng = rangescale
+    data.rng = float(rng)
     #print 'range scale:', rangescale 
 
     #Byte 34,35:
     ADInterval = uint8_to_uint16([msgData[33], msgData[34]])
-    ad = ADInterval
+    ad = int(ADInterval)
+    data.ad = ad
     #print 'ADInterval:', ADInterval 
 
     #Byte 36,37:
     LeftLimit = uint8_to_uint16([msgData[35], msgData[36]])
-    llim = LeftLimit
+    llim = int(LeftLimit)
+    data.llim = llim
     #print 'left limit of sonar sweep (1/16th gradian):', LeftLimit
 
     #Byte 38,39:
     RightLimit = uint8_to_uint16([msgData[37], msgData[38]])
-    rlim = RightLimit
+    rlim = int(RightLimit)
+    data.rlim = rlim
     #print 'right limit of sonar sweep (1/16th gradian):', RightLimit
 
     #Byte 40:
     StepAngleSize = msgData[39]
-    step = StepAngleSize
+    step = int(StepAngleSize)
+    data.step = step
     #print 'step size (between each ping) (1/16th gradian):', StepAngleSize
 
     #Bytes 41,42:
     transBearing = uint8_to_uint16([msgData[40], msgData[41]])
-    bear = transBearing
+    bear = int(transBearing)
+    data.bear = bear
     #print 'bearing of transducer (1/16th gradian):', transBearing
     transBearingDeg = ((float(msgData[40]+(msgData[41]*256))/6400.0)*360)  #convert back from 16th of a gradian to degrees
     transBearingDeg = transBearingDeg %360
     beardeg = transBearingDeg
+    data.beardeg = beardeg
     #print 'bearing of transducer (degrees):', transBearingDeg
 
     #Byte 43,44:
     nBins = uint8_to_uint16([msgData[42], msgData[43]])
-    nbins = nBins
+    nbins = int(nBins)
+    data.nbins = nbins
     #print 'number of bins:', nBins
 
     #data bytes:
     #print 'bin data:', msgData[44:-1] 
-    bins = msgData[44:-1]
+    bins = map(int, list(msgData[44:-1]))
+    data.bins = bins
     #print bins
-    #params = {'length':length, 'hdstat':hdstat, 'hd1':hd1, 'hd2':hd2, 'rng':rng, 'ad':ad, 'llim':llim, 'rlim':rlim, 'step':step, 'bear':bear, 'beardeg':beardeg, 'nbins':nbins}
     pub.publish(data)
     #print '_____________'
 
