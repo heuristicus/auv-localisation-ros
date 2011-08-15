@@ -1,0 +1,1 @@
+This ros package is intended to be used to parse the output of a series of bag files recorded from a sonar into a useful form. The sonar provides raw bin data from which the package will extract ranges and create files representing the readings that the sonar obtained, based on certain values of threshold and blanking distance.
