@@ -16,43 +16,42 @@ def callback(msgData):
     ### will need heading info from sub/compass.
     ### blanking distance proportional to transducer head angle/shape of sub.
     
-    #print "msgData:"
+    print "msgData:"
     msgData = numpy.fromstring(msgData.data, dtype=numpy.uint8)    
-    #print msgData
-    #pingPwr = headerData = numpy.fromstring(msgData.data[31:-1], dtype=numpy.uint8) 
-    #pingPwr = msgData[31:-1] 
+    pingPwr = headerData = numpy.fromstring(msgData.data[31:-1], dtype=numpy.uint8) 
+    pingPwr = msgData[31:-1] 
     
     #TEST LINE:
-    pingPwr = msgData[44:-1] 
+    #pingPwr = msgData[44:-1] 
     #print pingPwr
     
     
     print pingPwr
     print msgData[28]
-    #ADInterval = rospy.get_param("/ADInterval")
-    #GlitchCount = rospy.get_param("/GlitchCount")
-    #ThresholdCount = GlitchCount-1 # as in SonarPing.m
+    ADInterval = rospy.get_param("/ADInterval")
+    GlitchCount = rospy.get_param("/GlitchCount")
+    ThresholdCount = GlitchCount-1 # as in SonarPing.m
     
-    #Threshold = rospy.get_param("/Threshold")
-    #BlankDist = rospy.get_param("/BlankDist")
-    #Range = rospy.get_param("/Range")
-    #NBins = rospy.get_param("/NBins")
+    Threshold = rospy.get_param("/Threshold")
+    BlankDist = rospy.get_param("/BlankDist")
+    Range = rospy.get_param("/Range")
+    NBins = rospy.get_param("/NBins")
     
-    #BinLength = Range/float(NBins)    
+    BinLength = Range/float(NBins)    
     
     ######################################## Current detection threshold ###########################
     NewThreshold = 150
     NewBlankDist = 0.3 #for sonar testing in tank minus vehicle
     ################################################################################################
     
-    #StartBin = int(numpy.ceil(NewBlankDist/BinLength))
+    StartBin = int(numpy.ceil(NewBlankDist/BinLength))
     
-    #ReturnIndexes = numpy.flatnonzero(pingPwr[StartBin:-1]>NewThreshold)
+    ReturnIndexes = numpy.flatnonzero(pingPwr[StartBin:-1]>NewThreshold)
     
-    #ReturnIndexes = ReturnIndexes + StartBin
-    #print pingPwr[ReturnIndexes]
+    ReturnIndexes = ReturnIndexes + StartBin
+    print pingPwr[ReturnIndexes]
 
-    #print 'transbearing in grads',float(msgData[40]+(msgData[41]*256))
+    print 'transbearing in grads',float(msgData[40]+(msgData[41]*256))
     transBearing = ((float(msgData[40]+(msgData[41]*256))/6400.0)*360)  #convert back from 16th of a gradian to degrees (-90 for sonar mounting)
     transBearing = transBearing %360
 
@@ -63,13 +62,13 @@ def callback(msgData):
         TargetRange = -1
         pub.publish(transBearing=transBearing, rangeToTarget=TargetRange, heading=compass_heading)
 
-    #print type(transBearing)
+    print type(transBearing)
     print 'bearing:',transBearing#)/6400)*360
-    #print 'targetrange:',TargetRange
-    #print 'range:', Range
-    #print 'NBins:', NBins
-    #print 'binLength:', BinLength
-    #print 'ADInterval:',ADInterval
+    print 'targetrange:',TargetRange
+    print 'range:', Range
+    print 'NBins:', NBins
+    print 'binLength:', BinLength
+    print 'ADInterval:',ADInterval
     print '_____________'
     
     

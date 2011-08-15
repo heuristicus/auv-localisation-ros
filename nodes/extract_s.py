@@ -34,7 +34,7 @@ def callback(msgData):
    
     #Byte 21,22:
     rangescale = uint8_to_uint16([msgData[20], msgData[21]])
-    data.rng = rangescale
+    data.rng = int(rangescale)
     # print 'range scale:', rangescale 
 
     #Byte 34,35:
@@ -67,7 +67,7 @@ def callback(msgData):
 
     #Byte 43,44:
     nBins = uint8_to_uint16([msgData[42], msgData[43]])
-    data.nbins = nbins
+    data.nbins = int(nBins)
     #print 'number of bins:', nBins
 
     data.bins = map(int, list(msgData[44:-1]))
