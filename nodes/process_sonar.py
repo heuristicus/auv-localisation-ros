@@ -13,7 +13,17 @@ def newdata(sonar):
     - `sonar`:
     """
     ind = int(round(sonar.beardeg))
-    return_arr[ind].append(sonar)
+    return_arr[ind].append(ind) # put ranges in here
+
+def get_distance(bins):
+    """
+    """
+    threshold = 150
+    blanking_dist = 0.3
+    
+    bin_rng = pulse_range/len(bins)
+    
+
 
 def main():
     """
@@ -24,7 +34,6 @@ def main():
     rospy.init_node('process_sonar')
     sub = rospy.Subscriber('sonar_info', sonar_return, newdata)
     rospy.spin()
-    print return_arr
-
+    
 if __name__ == '__main__':
     main()
