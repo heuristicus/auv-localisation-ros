@@ -29,7 +29,8 @@ do
 	rosparam set $rparam $rng
 	echo Sending update notification to topic $utp
 	rostopic pub $utp std_msgs/String $umsg &
-	#rosbag play $1/$val
+	sleep 2 # give the process node some time to save data
+	rosbag play $1/$val
     fi
     
     sleep 2
