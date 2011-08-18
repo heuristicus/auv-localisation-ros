@@ -2,8 +2,8 @@
 import roslib; roslib.load_manifest('loc_sonar')
 import rospy
 
-from loc_sonar.msg import sonar_return
-from std_msgs.msg import String
+from loc_sonar.msg import sonar_return, point_range
+from std_msgs.msg import String, UInt16
 
 def newdata(sonar):
     """
@@ -12,10 +12,17 @@ def newdata(sonar):
     - `sonar`:
     """
     global bin_rng
-    bin_rng = float(rng/float(len(sonar.bins)))
-    #print bin_rng
+    bin_rng = round(float(rng/float(len(sonar.bins))), 3)
+    print bin_rng
     ind = int(round(sonar.beardeg))
-    return_arr[ind].append(get_distance(sonar.bins)) # put ranges in here
+    dist = get_distance(sonar.bins)
+    return_arr[ind].append(dist)
+    data = point_range()
+    data.x = x
+    data.y = y
+    data.angle = ind
+    data.range = round(dist, 3)
+    pts.publish(data)
     
 def update(val):
     global x, y, rng
@@ -67,8 +74,8 @@ def string_arr(array):
     """
     cv = ''
     for val in array:
-        cv += '%f '%(val) if val else '%d '%(0)
-    return cv[-1]
+        cv += '%.3f '%(val) if val else '%d '%(0)
+    return cv[:-1]
 
 
 def main():
@@ -78,12 +85,13 @@ def main():
     x = 0
     y = 0
     rng = 0
-    global info, par, return_arr, threshold, blanking_dist
+    global info, par, pts, return_arr, threshold, blanking_dist
     return_arr = [[] for x in range(360)]
     threshold = 140
     blanking_dist = 0.3
     info = rospy.Subscriber('sonar_info', sonar_return, newdata)
     par = rospy.Subscriber('param_update', String, update)
+    pts = rospy.Publisher('point_data', point_range)
     rospy.init_node('process_sonar')
     rospy.spin()
     

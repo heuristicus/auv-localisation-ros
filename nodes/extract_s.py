@@ -21,7 +21,6 @@ def callback(msgData):
     #Byte 17:
     headstatus = msgData[16]
     data.hdstat = int(headstatus)
-    #print hdstat
     #print 'head status', headstatus
 
     #Byte 19,20:
@@ -62,7 +61,7 @@ def callback(msgData):
     data.bear = int(transBearing)
     #print 'bearing of transducer (1/16th gradian):', transBearing
     transBearingDeg = ((float(msgData[40]+(msgData[41]*256))/6400.0)*360)  #convert back from 16th of a gradian to degrees
-    data.beardeg = transBearingDeg = transBearingDeg %360
+    data.beardeg = transBearingDeg
     #print 'bearing of transducer (degrees):', transBearingDeg
 
     #Byte 43,44:
