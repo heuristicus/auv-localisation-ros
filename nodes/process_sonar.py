@@ -13,7 +13,8 @@ def newdata(sonar):
     """
     global bin_rng
     bin_rng = round(float(rng/float(len(sonar.bins))), 3)
-    print bin_rng
+    #print bin_rng
+    print sonar.bins
     ind = int(round(sonar.beardeg))
     dist = get_distance(sonar.bins)
     return_arr[ind].append(dist)
@@ -59,7 +60,13 @@ def save_array():
         return
     else:
         # average of the two ranges if there are for a certain angle
-        return_arr = [sum(z)/len(z) if len(z) >= 1 else z for z in return_arr]
+        for i in range(len(return_arr)):
+            try:
+                if len(return_arr[i]) > 0:
+                    return_arr[i] = sum(return_arr[i])/len(return_arr[i])
+            except Exception:
+                return_arr[i] = 0
+        
         f = open('prc_%d_%d_%d.txt'%(x,y,rng), 'w')
         f.write(string_arr(return_arr))
         f.close()
