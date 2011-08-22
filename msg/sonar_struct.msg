@@ -1,3 +1,4 @@
+uint8 type
 uint16 length
 uint8 hdstat
 uint16 hd1

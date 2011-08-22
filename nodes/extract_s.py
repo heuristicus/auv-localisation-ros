@@ -6,12 +6,15 @@ import serial
 import time
 import numpy
 from std_msgs.msg import String
-from loc_sonar.msg import sonar_return
+from loc_sonar.msg import sonar_struct
 
 ################################################################
 def callback(msgData):    
     data = sonar_return()
     #read the msgData into a numpy array for processing
+
+    data.type = 0 # used for preprocessing if needed
+
     msgData = numpy.fromstring(msgData.data, dtype=numpy.uint8)
     #Byte 14,15:
     totalLength = uint8_to_uint16([msgData[13], msgData[14]])
@@ -77,14 +80,14 @@ def uint8_to_uint16(input8):
     output16 = input8[0]+(input8[1]*256)
     return output16
 
-def detectObstacle():
+def main():
     global pub
     rospy.init_node('sonar_extractParameters', anonymous = True)
-    rospy.Subscriber('sonar_output', String, callback)
-    pub = rospy.Publisher('sonar_info', sonar_return)
+    rospy.Subscriber('sonar_raw_output', String, callback)
+    pub = rospy.Publisher('sonar_readable', sonar_struct)
     rospy.spin()
 
 if __name__ == '__main__':
-    detectObstacle()
+    main()
 
 
