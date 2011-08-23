@@ -51,10 +51,12 @@ class SonarMath:
             noise_ranges.append(random.gauss(i,sigma) if i is not -1 else -1)
         return noise_ranges
 
-    def apply_point_noise(self, x, y, xsigma, ysigma):
+    def apply_point_noise(self, x, y, xsigma, ysigma, pret=False):
         """Apply gaussian noise to a point"""
         x = random.gauss(x, xsigma)
         y = random.gauss(y, ysigma)
+        if pret:
+            return Point(x,y)
         return (x,y)
 
     def get_noise(self, value, sigma):

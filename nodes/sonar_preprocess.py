@@ -7,6 +7,7 @@ from loc_sonar.msg import sonar_struct, proc_sonar
 def initialise():
     create_subscribers()
     create_publishers()
+    get_params()
 
 def pre_real(data):
     print 'processing real data'
@@ -14,6 +15,7 @@ def pre_real(data):
 
 def pre_sim(data):
     print 'processing sim data'
+    action.publish(data)
 
 def create_subscribers():
     global real, sim
@@ -24,6 +26,11 @@ def create_subscribers():
 def create_publishers():
     global action
     action = rospy.Publisher('sonar_pre', proc_sonar)
+
+def get_params():
+    global angle_range, step
+    angle_range = rospy.get_param('sweep_angle')
+    step = rospy.get_param('sonar_step')
 
 if __name__ == '__main__':
     initialise()

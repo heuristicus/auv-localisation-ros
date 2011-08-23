@@ -8,7 +8,7 @@ class ParticleList:
         self.particles = []
 
     def add(self, particle):
-        if len(particles) < self.max_p:
+        if len(self.particles) < self.max_p:
             self.particles.append(particle)
             return True
         else:

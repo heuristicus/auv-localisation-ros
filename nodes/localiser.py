@@ -10,6 +10,7 @@ class Localiser:
         self.get_params()
         self.particles = particle_list.ParticleList(self.particle_num)
         self.map = map_rep.MapRep(self.mapfile)
+        self.scale = self.map.scale
         self.math = s_math.SonarMath()
         if self.use_sim is 1:
             self.sonar = sonar_sim.Sonar()
@@ -23,21 +24,20 @@ class Localiser:
         rospy.spin()
 
     def create_subscribers(self):
-        self.actsub = rospy.Subscriber('sonar_action', proc_sonar, self.update)
+        self.actsub = rospy.Subscriber('sonar_pre', proc_sonar, self.update)
         rospy.init_node('localiser')
 
-    def generate_particles(self):
+    def generate_particles(self, loc, angle):
         """Create a number of particles."""
-        sonar_loc = self.sonar.loc()
         # the sonar only knows where it is in the first step (let's
         # pretend), and so when you don't know where the sonar is we
         # generate points based on our localised value
-        if not sonarloc:
-            sonarloc = self.estimated_loc
+        if not loc:
+            loc = self.estimated_loc
         if not self.particles.initialised():
             for i in range(self.particles.max_particles()):
                 # Create a particle within a gaussian range of the current sonar location
-                self.particles.add(particle.Particle(Point(self.math.apply_point_noise(self.sonar.x, self.sonar.y, self.loc_noise, self.loc_noise)), self))
+                self.particles.add(particle.Particle(self.math.apply_point_noise(loc.x, loc.y, self.loc_noise, self.loc_noise, pret=True), self.map, self.math.get_noise(angle, self.ang_noise)))
 
     def weight_particle(self, sonar_ranges, particle):
         """Weights the given particle according to the difference
@@ -68,13 +68,13 @@ class Localiser:
         prev_pos = data.prev
         sonar_ranges = data.ranges
 
-        self.generate_particles(self.num_particles) # only if no particles are present in the list
+        self.generate_particles(prev_pos, angle) # only if no particles are present in the list
         self.particles.resample() # only if particles exist and have weights
         move_vector = self.math.get_move_vector(prev_pos, to_move)
         for particle in self.particles.list():
             particle.move(move_vector, angle)
             particle.get_ranges(self.scale)
-            self.weight_particle(particle)
+            self.weight_particle(sonar_ranges, particle)
 
         # print self.get_localisation_error()
         
@@ -86,12 +86,11 @@ class Localiser:
         """Reads parameters from a file and saves them in a dictionary"""
         self.max_range = rospy.get_param('sonar_maxrange')
         self.min_range = rospy.get_param('sonar_minrange')        
-        self.max_range = rospy.get_param('sonar_maxrange')
-        self.step = rospy.get_param('sonar_step')
-        self.ang_ns = rospy.get_param('angle_noise')
-        self.loc_ns = rospy.get_param('location_noise')
-        self.rng_ns = rospy.get_param('range_noise')
         self.angle_range = rospy.get_param('sweep_angle')
+        self.step = rospy.get_param('sonar_step')
+        self.ang_noise = rospy.get_param('angle_noise')
+        self.loc_noise = rospy.get_param('location_noise')
+        self.rng_noise = rospy.get_param('range_noise')
         self.mapfile = rospy.get_param('loc_map')
         self.particle_num = rospy.get_param('particle_num')
         self.use_sim = rospy.get_param('use_sim')
