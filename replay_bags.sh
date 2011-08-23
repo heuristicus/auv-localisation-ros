@@ -4,7 +4,7 @@ rparam=sonar/rng
 utp=/param_update
 umsg="update"
 
-for r in 5 10 20 50 ; do
+for r in 5 ; do
     
     echo $r
     

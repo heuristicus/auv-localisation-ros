@@ -2,7 +2,7 @@
 import roslib; roslib.load_manifest('loc_sonar')
 import rospy
 
-from loc_sonar.msg import sonar_return, point_range
+from loc_sonar.msg import sonar_struct, point_range
 from std_msgs.msg import String, UInt16
 
 def newdata(sonar):
@@ -14,7 +14,7 @@ def newdata(sonar):
     global bin_rng
     bin_rng = round(float(rng/float(len(sonar.bins))), 3)
     #print bin_rng
-    print sonar.bins
+    #print sonar.bins
     ind = int(round(sonar.beardeg))
     dist = get_distance(sonar.bins)
     return_arr[ind].append(dist)
@@ -40,7 +40,9 @@ def get_distance(bins):
     #print 'Ignore up to index %d'%(blank_index)
     wrk = [x if x > threshold else 0 for x in bins[blank_index:]]
     avg = sum(wrk)/len(wrk)
-    return get_first(wrk) * bin_rng
+    dist = get_first(wrk) * bin_rng
+    print dist
+    return dist
 
 def get_first(arr):
     """Returns the index of the first non-zero element of an array.
@@ -70,7 +72,6 @@ def save_array():
         f = open('prc_%d_%d_%d.txt'%(x,y,rng), 'w')
         f.write(string_arr(return_arr))
         f.close()
-        
     return_arr = [[] for x in range(360)]
 
 def string_arr(array):
@@ -94,9 +95,9 @@ def main():
     rng = 0
     global info, par, pts, return_arr, threshold, blanking_dist
     return_arr = [[] for x in range(360)]
-    threshold = 140
+    threshold = 135
     blanking_dist = 0.3
-    info = rospy.Subscriber('sonar_info', sonar_return, newdata)
+    info = rospy.Subscriber('sonar_readable', sonar_struct, newdata)
     par = rospy.Subscriber('param_update', String, update)
     pts = rospy.Publisher('point_data', point_range)
     rospy.init_node('process_sonar')

@@ -10,7 +10,7 @@ from loc_sonar.msg import sonar_struct
 
 ################################################################
 def callback(msgData):    
-    data = sonar_return()
+    data = sonar_struct()
     #read the msgData into a numpy array for processing
 
     data.type = 0 # used for preprocessing if needed
@@ -83,7 +83,7 @@ def uint8_to_uint16(input8):
 def main():
     global pub
     rospy.init_node('sonar_extractParameters', anonymous = True)
-    rospy.Subscriber('sonar_raw_output', String, callback)
+    rospy.Subscriber('sonar_output', String, callback)
     pub = rospy.Publisher('sonar_readable', sonar_struct)
     rospy.spin()
 
