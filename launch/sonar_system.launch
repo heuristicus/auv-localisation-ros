@@ -1,0 +1,38 @@
+<launch>
+	
+	<!--PARAMS-->
+
+	<!--Amount of noise to apply to the angle of the vehicle in degrees-->
+	<param name="angle_noise" value="5" />
+	<!--Noise to apply to the position of the vehicle and particles-->
+	<param name="location_noise" value="0.5" />
+	<!--Noise to apply to ranges in the particle filter or simulator-->
+	<param name="range_noise" value="0.5" />
+	<!--Angle in degrees between each successive ping-->
+	<param name="sonar_step" value="15" />
+	<!--Maximum range of the sonar in metres-->
+	<param name="sonar_maxrange" value="50" />
+	<!--Minimum range of the sonar-->
+	<param name="sonar_minrange" value="0.1" />
+	<!--Sweep angle of the sonar in degrees-->
+	<param name="sweep_angle" value="270" />
+
+	<!--NODES-->
+
+	<!-- simulation -->
+	<!--<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' />-->
+	<!--<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py' />-->
+
+
+	<!--  localisation -->
+	<node name='localiser' pkg='loc_sonar' type='localiser.py' />
+	<node name='sonar_extract_raw'' pkg='loc_sonar' type='sonar_extract_raw.py' />
+
+	<!--sonar extraction-->	
+	<!--	extracts bin data and so on from raw sonar messages-->
+	<node name="sonar_extract_raw" pkg="loc_sonar" type="sonar_extract_raw.py" />
+
+	<!--sonar hardware interface-->
+	<node name='sonar_hw' pkg='loc_sonar' type='sonar_hw.py' />
+
+</launch>

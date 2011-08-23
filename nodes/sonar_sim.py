@@ -2,15 +2,12 @@
 
 class Sonar:
 
-    def __init__(self, map_, move_list, max_rng=50, min_rng=4, step=25, out_file=None, param_file=None):
-        self.read_params(param_file)
+    def __init__(self, map_, move_list, out_file=None):
+        self.get_params()
         self.ranges = [] # Distances to objects in the map on previous pulse
         self.scan_lines = []
         self.intersection_points = []
         #self.move_list = move_list # tuples containing a point location and angle of the sonar.
-        self.max_range = max_rng # Maximum range of the sonar pulse in cm
-        self.min_range = min_rng
-        self.step = step # Angle moved by the sonar head between each pulse
         self.angle_range = 270 # Total angle that the sonar sweeps through
         self.scan_number = self.angle_range/self.step
         # Where the first pulse is directed from. Sonar initialised so
@@ -26,22 +23,15 @@ class Sonar:
         self.file = out_file
         self.math = s_math.SonarMath()
 
-    def read_params(self, fname):
+    def get_params(self):
         """Reads parameters from a file and saves them in a dictionary"""
-        if not fname:
-            self.ang_noise = 5
-            self.loc_noise = 0.5
-            self.rng_noise = 0.5
-        else:
-            f = open(fname)
-            s = f.read().split('\n')[:-1]
-            params = {}
-            for param in s:
-                z = param.split(' = ')
-                params[z[0]] = float(z[1])
-            self.ang_noise = params.get('ang_ns')
-            self.loc_noise = params.get('loc_ns')
-            self.rng_noise = params.get('rng_ns')
+        self.max_range = rospy.get_param('sonar_maxrange')
+        self.min_range = rospy.get_param('sonar_minrange')
+        self.step = rospy.get_param('sonar_step')
+        self.ang_ns = rospy.get_param('angle_noise')
+        self.loc_ns = rospy.get_param('location_noise')
+        self.rng_ns = rospy.get_param('range_noise')
+        self.angle_range = rospy.get_param('sweep_angle')
                                         
     def reset(self):
         self.ranges = []
