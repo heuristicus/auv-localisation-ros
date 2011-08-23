@@ -1,8 +1,12 @@
-#!/bin/python
+#!/usr/bin/python
 import roslib; roslib.load_manifest('loc_sonar')
 import rospy
-from loc_sonar.msg import sonar_action
+from loc_sonar.msg import sonar_struct, proc_sonar
 
+
+def initialise():
+    create_subscribers()
+    create_publishers()
 
 def pre_real(data):
     print 'processing real data'
@@ -13,13 +17,14 @@ def pre_sim(data):
 
 def create_subscribers():
     global real, sim
-    sonardata = rospy.Subscriber('sonar_readable', sonar_struct, pre_real)
-    sonardata = rospy.Subscriber('sonar_sim_readable', sonar_proc, pre_sim) 
+    real = rospy.Subscriber('sonar_readable', sonar_struct, pre_real)
+    sim = rospy.Subscriber('sonar_sim_readable', proc_sonar, pre_sim) 
     rospy.init_node('sonar_preprocess')
 
 def create_publishers():
     global action
-    action = rospy.Publisher('sonar_pre', sonar_proc)
+    action = rospy.Publisher('sonar_pre', proc_sonar)
 
 if __name__ == '__main__':
-    print 'a'
+    initialise()
+    rospy.spin()

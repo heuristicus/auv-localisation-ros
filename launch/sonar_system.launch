@@ -1,5 +1,10 @@
 <launch>
 	
+	<!--If you are using the sonar simulator, set this to 1, otherwise to 0.
+	You must remember to uncomment the relevant nodes below - sonar_hw runs the hardware interface, sonar_raw extract extracts data from the raw sonar data. This should also be set to no if you are using the sonar_exp_sim.py node, since the data it produces does not need to be simulated.-->
+
+	<param name="use_sim" value="0" />
+	
 	<!--PARAMS-->
 
 	<!--Amount of noise to apply to the angle of the vehicle in degrees-->
@@ -17,22 +22,29 @@
 	<!--Sweep angle of the sonar in degrees-->
 	<param name="sweep_angle" value="270" />
 
+
+	<!--Map to use for localisation-->
+	<param name="loc_map" value="$(find loc_sonar)/nodes/gisbert.map"/>
+	<!--Number of particles to use in localisation-->
+	<param name="particle_num" value="10"/>
+
 	<!--NODES-->
 
 	<!-- simulation -->
 	<!--<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' />-->
 	<!--<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py' />-->
 
-
 	<!--  localisation -->
 	<node name='localiser' pkg='loc_sonar' type='localiser.py' />
-	<node name='sonar_extract_raw'' pkg='loc_sonar' type='sonar_extract_raw.py' />
-
+	
 	<!--sonar extraction-->	
-	<!--	extracts bin data and so on from raw sonar messages-->
-	<node name="sonar_extract_raw" pkg="loc_sonar" type="sonar_extract_raw.py" />
+	<!--extracts bin data and so on from raw sonar messages-->
+<!--	<node name="sonar_raw_extract" pkg="loc_sonar" type="sonar_raw_extract.py" />-->
+
+	<!--sonar processing-->
+	<node name="sonar_preprocess" pkg="loc_sonar" type="sonar_preprocess.py" />
 
 	<!--sonar hardware interface-->
-	<node name='sonar_hw' pkg='loc_sonar' type='sonar_hw.py' />
+<!--	<node name='sonar_hw' pkg='loc_sonar' type='sonar_hw.py' />-->
 
 </launch>

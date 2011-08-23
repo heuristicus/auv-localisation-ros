@@ -1,25 +1,30 @@
-#!/bin/python
+#!/usr/bin/python
 import roslib; roslib.load_manifest('loc_sonar')
 import rospy
-from loc_sonar.msg import sonar_action
-import map_rep, gui, sys, move_list, s_math, particle, particle_list, sonar
+from loc_sonar.msg import proc_sonar
+import map_rep, sys, s_math, particle, particle_list, sonar_sim
 
 class Localiser:
 
-    def __init__(self, particle_num, mapfile, sonar_params, paramfile=''):
-        self.particles = particle_list.ParticleList(particle_num)
-        self.map = map_rep.MapRep(fname=mapfile)
-        self.read_noise_params(fname=paramfile)
+    def __init__(self):
+        self.get_params()
+        self.particles = particle_list.ParticleList(self.particle_num)
+        self.map = map_rep.MapRep(self.mapfile)
         self.math = s_math.SonarMath()
-        if sonar_params['type'] is not 'hw':
-            sonar_params['map_'] = mapfile
-            self.sonar = sonar.Sonar(**sonar_params)
+        if self.use_sim is 1:
+            self.sonar = sonar_sim.Sonar()
+        elif self.use_sim is 0:
+            print 'not using sim'
+        else:
+            rospy.logerr('Localiser did not receive a sensible value for use_sim: %s'%(self.use_sim))
+            rospy.signal_shutdown('Invalid parameter.')
 
         self.create_subscribers()
+        rospy.spin()
 
     def create_subscribers(self):
-        self.actsub = rospy.Subscriber('sonar_action', sonar_action, self.update)
-        self.init_node('localiser')
+        self.actsub = rospy.Subscriber('sonar_action', proc_sonar, self.update)
+        rospy.init_node('localiser')
 
     def generate_particles(self):
         """Create a number of particles."""
@@ -77,24 +82,19 @@ class Localiser:
         lsa = self.particles.best().loc
         return (self.loc.x - lsa.x, self.loc.y - lsa.y)
 
-    def read_noise_params(self, fname):
+    def get_params(self):
         """Reads parameters from a file and saves them in a dictionary"""
-        if not fname:
-            self.ang_noise = 5
-            self.loc_noise = 0.5
-            self.rng_noise = 0.5
-        else:
-            f = open(fname)
-            s = f.read().split('\n')[:-1]
-            params = {}
-            for param in s:
-                z = param.split(' = ')
-                params[z[0]] = float(z[1])
-            self.ang_noise = params.get('ang_ns')
-            self.loc_noise = params.get('loc_ns')
-            self.rng_noise = params.get('rng_ns')
+        self.max_range = rospy.get_param('sonar_maxrange')
+        self.min_range = rospy.get_param('sonar_minrange')        
+        self.max_range = rospy.get_param('sonar_maxrange')
+        self.step = rospy.get_param('sonar_step')
+        self.ang_ns = rospy.get_param('angle_noise')
+        self.loc_ns = rospy.get_param('location_noise')
+        self.rng_ns = rospy.get_param('range_noise')
+        self.angle_range = rospy.get_param('sweep_angle')
+        self.mapfile = rospy.get_param('loc_map')
+        self.particle_num = rospy.get_param('particle_num')
+        self.use_sim = rospy.get_param('use_sim')
 
 if __name__ == '__main__':
-    s_param = {'max_rng':50, 'step': 15, 'move_list': 'i.mv'}
-    s_param = {'type': 'hw'}
-    l = Localiser(25, 'gisbert.map', s_param, paramfile='params.txt')
+    Localiser()
