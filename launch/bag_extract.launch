@@ -1,5 +1,5 @@
 <launch>
-	<node name="extract_s" pkg="loc_sonar" type="extract_s.py" />
+	<node name="extract_s" pkg="loc_sonar" type="sonar_extract_raw.py" />
 	<node name="process_sonar" pkg="loc_sonar" type="process_sonar.py" output="screen"/>
-	<!--<node name="gui" pkg="loc_sonar" type="gui.py"/>-->
+	<!--<node name="ros_gui" pkg="loc_sonar" type="ros_gui.py"/>-->
 </launch>
