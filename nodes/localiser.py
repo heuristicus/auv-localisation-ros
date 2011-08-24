@@ -75,26 +75,16 @@ class Localiser:
         actual = data.actual
 
         self.generate_particles(prev_pos, angle) # only if no particles are present in the list
-        print sonar_ranges
-        #print angle
         self.particles.resample() # only if particles exist and have weights
         move_vector = self.math.get_move_vector(prev_pos, to_move)
         for particle in self.particles.list():
             particle.move(move_vector, angle)
             particle.get_ranges(self.scale)
             self.weight_particle(sonar_ranges, particle)
-            #print particle.initial_angle
-            loc_d = self.get_location_diff(actual, particle.loc)
-            print loc_d
-            if loc_d < 10:
-                print particle.ranges
             if self.use_gui:
                 mline = particle.move_line.coords
                 mv = line(point(mline[0][0], mline[0][1]), point(mline[1][0], mline[1][1]))
                 self.guipub.publish(weight=particle.wt, loc=point(particle.loc.x, particle.loc.y), angle=particle.initial_angle, ranges=particle.ranges, moveline=mv)
-
-        
-        # print self.get_localisation_error()
         
     def get_localisation_error(self):
         lsa = self.particles.best().loc

@@ -36,9 +36,7 @@ class Particle:
         self.int = []
         self.current_angle = self.initial_angle
         self.ranges = []
-        angles = []
         for i in range(self.scan_number):
-            angles.append(self.current_angle)
             ln = self.math.get_scan_line(self.loc, self.current_angle, self.max_range)
             intersect = self.math.get_intersect_point(self.loc, ln, self.map)
             dist = self.math.intersect_distance(self.loc, intersect, self.min_range, self.max_range,)
@@ -47,8 +45,7 @@ class Particle:
             self.int.append(intersect)
             self.ranges.append(dist)
             self.current_angle += self.step
-        print angles, 'particle'
-        #self.math.apply_range_noise(self.ranges, self.rng_noise)
+        self.math.apply_range_noise(self.ranges, self.rng_noise)
 
     def move(self, vector, angle):
         """Move the particle along a vector, and set its scan start angle. Introduces noise."""
@@ -61,7 +58,12 @@ class Particle:
         endpt = self.math.rotate_point(self.loc, vector, angle_noise)
         # Apply noise to the endpoint location
         n_end = self.math.apply_point_noise(endpt.x, endpt.y, self.loc_noise, self.loc_noise, pret=True)
+
+        ###### MAY CAUSE ERRORS #######
+
         self.initial_angle = 315 - angle + angle_noise
+
+        ###### MAY CAUSE ERRORS #######
         
         last = self.loc
         self.loc = n_end
