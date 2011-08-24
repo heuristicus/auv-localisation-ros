@@ -49,7 +49,6 @@ class Sonar:
 
     def make_pub(self):
         self.out = rospy.Publisher('sonar_pre', proc_sonar)
-        print self.out
         rospy.init_node('sonar_sim')
 
     def move_to_random(self, height, width):
@@ -74,8 +73,7 @@ class Sonar:
         nextmv = self.move_list.next()
         next = nextmv[0]
         angle = nextmv[1]
-        
-        print prev,next
+       
         move_vector = self.math.get_move_vector(prev, next)
         if move_vector is not(0,0):
             angle_noise = self.math.get_noise(0, self.ang_noise)
@@ -85,14 +83,7 @@ class Sonar:
             self.loc = n_end
 
         self.get_ranges()
-
-        data = proc_sonar()
-        data.prev = point(prev.x, prev.y) # currently sends actual previous point, not the one in the list. Should probably change this.
-        data.next = point(next.x, next.y)
-        data.angle = angle
-        data.ranges = self.ranges
-        print data
-        self.out.publish(data)
+        self.out.publish(prev=point(prev.x, prev.y), next=point(next.x, next.y), angle=angle, ranges=self.ranges, actual=point(self.loc.x, self.loc.y))
         
 
     def get_ranges(self):

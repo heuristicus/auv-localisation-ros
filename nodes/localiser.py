@@ -1,8 +1,9 @@
 #!/usr/bin/python
 import roslib; roslib.load_manifest('loc_sonar')
 import rospy
-from loc_sonar.msg import proc_sonar
-import map_rep, sys, s_math, particle, particle_list, sonar_sim
+from loc_sonar.msg import proc_sonar, particle_data, point, line
+from std_msgs.msg import String
+import map_rep, sys, s_math, particle, particle_list
 
 class Localiser:
 
@@ -12,12 +13,18 @@ class Localiser:
         self.map = map_rep.MapRep(self.mapfile)
         self.scale = self.map.scale
         self.math = s_math.SonarMath()
+        self.create_publishers()
         self.create_subscribers()
         rospy.spin()
 
     def create_subscribers(self):
         self.actsub = rospy.Subscriber('sonar_pre', proc_sonar, self.update)
         rospy.init_node('localiser')
+
+    def create_publishers(self):
+        if self.use_gui:
+            self.guipub = rospy.Publisher('particle', particle_data)
+            self.updatepub = rospy.Publisher('particle_update', String)
 
     def generate_particles(self, loc, angle):
         """Create a number of particles."""
@@ -55,6 +62,8 @@ class Localiser:
         # should be able to cope with backlogs in the actions since it
         # will scan through the actions missed and move particles
         # along all vectors that have not been processed yet.
+        #if self.use_gui:
+            #self.updatepub.publish('update started')
         to_move = data.next
         angle = data.angle
         prev_pos = data.prev
@@ -67,7 +76,12 @@ class Localiser:
             particle.move(move_vector, angle)
             particle.get_ranges(self.scale)
             self.weight_particle(sonar_ranges, particle)
+            if self.use_gui:
+                mline = particle.move_line.coords
+                mv = line(point(mline[0][0], mline[0][1]), point(mline[1][0], mline[1][1]))
+                self.guipub.publish(weight=particle.wt, loc=point(particle.loc.x, particle.loc.y), angle=particle.initial_angle, ranges=particle.ranges, moveline=mv)
 
+        
         # print self.get_localisation_error()
         
     def get_localisation_error(self):
@@ -85,7 +99,7 @@ class Localiser:
         self.rng_noise = rospy.get_param('range_noise')
         self.mapfile = rospy.get_param('loc_map')
         self.particle_num = rospy.get_param('particle_num')
-        #self.use_sim = rospy.get_param('use_sim')
+        self.use_gui = rospy.get_param('use_gui')
 
 if __name__ == '__main__':
     Localiser()

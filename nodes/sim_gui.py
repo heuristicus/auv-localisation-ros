@@ -1,82 +1,74 @@
 #!/usr/bin/python
-import map_rep
+import roslib; roslib.load_manifest('loc_sonar')
+import map_rep, rospy, move_list
+from loc_sonar.msg import particle_data, proc_sonar
+from std_msgs.msg import String
 from Tkinter import Tk, Canvas, Button
 
 class gui:
 
-    def __init__(self, sonar):
+    def __init__(self):
+        self.get_params()
         self.tk = Tk()
         self.canvas = Canvas(self.tk, height=800, width=800)
         self.canvas.pack()
-        self.next = Button(self.tk, text='next', command=self.step)
-        self.next.pack()
-        self.rb = Button(self.tk, text='run', command=self.run)
-        self.rb.pack()
-        self.sonar = sonar
+        #self.next = Button(self.tk, text='next', command=self.step)
+        #self.next.pack()
+        #self.rb = Button(self.tk, text='run', command=self.run)
+        #self.rb.pack()
+        #self.sonar = sonar
+        #self.localiser = localiser
         self.draw_map()
         self.draw_move_points()
         self.delete_old = True
+        self.create_subscribers()
         #self.tk.after(20,self.redraw)
 
         self.tk.mainloop()
 
-    def run(self):
-        self.next.config(state='disabled')
-        self.rb.config(state='disabled')
-        self.manual = False
-        self.tk.after(50, self.redraw)
+    def create_subscribers(self):
+        self.particlesub = rospy.Subscriber('particle', particle_data, self.particle)
+        self.sonarsub = rospy.Subscriber('sonar_pre', proc_sonar, self.sonar)
+        self.updatesub = rospy.Subscriber('particle_update', String, self.delete)
+        rospy.init_node('sim_gui')
 
-    def step(self):
-        self.manual = True
-        self.redraw()
-        
-    def redraw(self):
-        check = self.sonar.sim_step()
+    def delete(self, msg):
         if self.delete_old:
-            self.canvas.delete('scan')
-            self.canvas.delete('intersect')
-            self.canvas.delete('particle')
             self.canvas.delete('mvln')
-            
-        self.draw_sonar_data()
-        self.draw_particle_data()
-        if check is not -1 and self.manual is False:
-            self.tk.after(50, self.redraw)
-        
-    def draw_sonar_data(self):
-        #print 'data'
-        #for line in self.sonar.scan_lines:
-            #draw_line(self.canvas, line, tag='scan')
-            
-        #for point in self.sonar.intersection_points:
-            #draw_point(self.canvas, point, tag='intersect')
-        draw_point(self.canvas, self.sonar.loc, tag='sonar', colour='red')
+            self.canvas.delete('particle')
 
-    def draw_particle_data(self):
-        particles = self.sonar.particles.list()
-        for particle in particles:
-            draw_point(self.canvas, particle.loc, weight=particle.wt, tag='particle')
-            if particle.move_line:
-                draw_line(self.canvas, particle.move_line, tag='mvln')
-            #for line in particle.scan:
-             #   draw_line(self.canvas, line, tag='scan')
-            #for intersect in particle.int:
-                #draw_point(self.canvas, intersect, tag='intersect')
-        
+    def get_params(self):
+        self.move_file = rospy.get_param('move_list')
+        self.map_file = rospy.get_param('loc_map')
+        self.map = map_rep.MapRep(fname=self.map_file) # Map to use the sonar in
+        self.scale = self.map.scale
+        self.move_list = move_list.MoveList(fname=self.move_file)
+
+    def sonar(self, data):
+        #self.canvas.delete('sonar')
+        draw_point(self.canvas, data.actual, tag='sonar', colour='red')
+
+    def particle(self, data):
+        #self.canvas.delete('particle')
+        draw_point(self.canvas, data.loc, weight=data.weight, tag='particle')
+        draw_line(self.canvas, data.moveline, tag='mvln')
+        self.canvas.create_text(data.loc.x, data.loc.y, text='%d'%(data.weight))
+                              
     def draw_map(self):
         #print 'map'
-        for line in self.sonar.map.lines:
-            draw_line(self.canvas, line, tag='map')
+        for line in self.map.lines:
+            draw_linestr(self.canvas, line, tag='map')
 
     def draw_move_points(self):
-        for point in self.sonar.get_move_list():
+        for point in self.move_list.get_list():
             draw_point(self.canvas, point[0], tag='mvpt')
-        #for line in self.sonar.move_list.lines:
-            #draw_line(self.canvas, line)
-
-def draw_line(canvas, line, tag=''):
+        
+def draw_linestr(canvas, line, tag=''):
     c = line.coords
     canvas.create_line(c[0][0], c[0][1], c[1][0], c[1][1], tags=tag)
+
+def draw_line(canvas, line, tag=''):
+    canvas.create_line(line.start.x, line.start.y, line.end.x, line.end.y, tags=tag)
 
 def draw_point(canvas, point, weight=0, colour='black', tag=''):
     pt = point
@@ -91,3 +83,6 @@ def draw_circle_from_centre(canvas, radius, centre):
     tl = Point(centre.x - radius, centre.y + radius)
     br = Point(centre.x + radius, centre.y - radius)
     canvas.create_oval(tl.x, tl.y, br.x, br.y)
+
+if __name__ == '__main__':
+    gui()
