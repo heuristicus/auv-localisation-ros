@@ -1,8 +1,11 @@
 #!/usr/bin/python
+import roslib; roslib.load_manifest('loc_sonar')
+import rospy, s_math, map_rep, move_list
+from loc_sonar.msg import proc_sonar
 
 class Sonar:
 
-    def __init__(self, map_, move_list, out_file=None):
+    def __init__(self, out_file=None):
         self.get_params()
         self.ranges = [] # Distances to objects in the map on previous pulse
         self.scan_lines = []
@@ -12,9 +15,9 @@ class Sonar:
         self.scan_number = self.angle_range/self.step
         # Where the first pulse is directed from. Sonar initialised so
         # that the first pulse travels from -125, where up is 0.
-        self.map = map_ # Map to use the sonar in
+        self.map = map_rep.MapRep(fname=self.map_file) # Map to use the sonar in
         self.scale = self.map.scale
-
+        self.move_list = move_list.MoveList(fname=self.move_file)
         start_point = move_list.first()
         self.start_loc = start_point # Starting location of the sonar in the map
         self.loc = self.start_loc # Current location of the sonar in the map
@@ -32,6 +35,8 @@ class Sonar:
         self.loc_ns = rospy.get_param('location_noise')
         self.rng_ns = rospy.get_param('range_noise')
         self.angle_range = rospy.get_param('sweep_angle')
+        self.move_file = rospy.get_param('move_list')
+        self.map_file = rospy.get_param('loc_map')
                                         
     def reset(self):
         self.ranges = []

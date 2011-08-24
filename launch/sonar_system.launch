@@ -1,11 +1,15 @@
 <launch>
 	
+	<!--PARAMS-->
+
 	<!--If you are using the sonar simulator, set this to 1, otherwise to 0.
 	You must remember to uncomment the relevant nodes below - sonar_hw runs the hardware interface, sonar_raw extract extracts data from the raw sonar data. This should also be set to no if you are using the sonar_exp_sim.py node, since the data it produces does not need to be simulated.-->
 
-	<param name="use_sim" value="0" />
-	
-	<!--PARAMS-->
+	<param name="use_sim" value="1" />
+	<!--The actions that the simulator should take in the map-->
+	<param name="move_list" value="$(find loc_sonar)/nodes/i.mv">
+	<!--Map to use for simulator and localisation-->
+	<param name="loc_map" value="$(find loc_sonar)/nodes/i.map"/>
 
 	<!--Amount of noise to apply to the angle of the vehicle in degrees-->
 	<param name="angle_noise" value="5" />
@@ -23,16 +27,15 @@
 	<param name="sweep_angle" value="270" />
 
 
-	<!--Map to use for localisation-->
-	<param name="loc_map" value="$(find loc_sonar)/nodes/gisbert.map"/>
+	
 	<!--Number of particles to use in localisation-->
 	<param name="particle_num" value="10"/>
 
 	<!--NODES-->
 
 	<!-- simulation -->
-	<!--<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' />-->
-	<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py' />
+	<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' />
+<!--	<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py' />-->
 
 	<!--  localisation -->
 	<node name='localiser' pkg='loc_sonar' type='localiser.py' output="screen"/>
