@@ -34,7 +34,7 @@
 	<!--NODES-->
 
 	<!-- simulation -->
-	<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' />
+<!--	<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' />-->
 <!--	<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py' />-->
 
 	<!--  localisation -->

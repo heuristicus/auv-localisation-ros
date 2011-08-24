@@ -16,8 +16,8 @@ class Sonar:
         self.map = map_rep.MapRep(fname=self.map_file) # Map to use the sonar in
         self.scale = self.map.scale
         self.move_list = move_list.MoveList(fname=self.move_file)
-        start_point = move_list.first()
-        self.start_loc = start_point # Starting location of the sonar in the map
+        start_point = self.move_list.first()
+        self.start_loc = start_point[0] # Starting location of the sonar in the map
         self.loc = self.start_loc # Current location of the sonar in the map
         # Where the first pulse is directed from. Sonar initialised so
         # that the first pulse travels from -125, where up is 0.
@@ -34,9 +34,9 @@ class Sonar:
         self.max_range = rospy.get_param('sonar_maxrange')
         self.min_range = rospy.get_param('sonar_minrange')
         self.step = rospy.get_param('sonar_step')
-        self.ang_ns = rospy.get_param('angle_noise')
-        self.loc_ns = rospy.get_param('location_noise')
-        self.rng_ns = rospy.get_param('range_noise')
+        self.ang_noise = rospy.get_param('angle_noise')
+        self.loc_noise = rospy.get_param('location_noise')
+        self.rng_noise = rospy.get_param('range_noise')
         self.angle_range = rospy.get_param('sweep_angle')
         self.move_file = rospy.get_param('move_list')
         self.map_file = rospy.get_param('loc_map')
@@ -51,19 +51,6 @@ class Sonar:
         self.out = rospy.Publisher('sonar_pre', proc_sonar)
         rospy.init_node('sonar_sim')
 
-    def move_to_noisy(self, vector, rotation):
-        """Moves the sonar to the next point, with noise applied to
-        the angle and point."""
-        if self.first:
-            self.move_to(vector, rotation)
-            self.first = False
-        else:
-            angle_noise = self.math.get_noise(0, self.ang_noise)
-            endpt = self.math.rotate_point(self.loc, vector, angle_noise)
-            self.loc = Point(self.math.apply_point_noise(endpt.x, endpt.y, self.loc_noise, self.loc_noise))
-            # apply gaussian noise to the rotation
-            self.initial_angle = 315 - rotation + angle_noise
-
     def move_to_random(self, height, width):
         """Moves the sonar to a random position within a height x
         width rectangle."""
@@ -77,21 +64,22 @@ class Sonar:
 
     def run_sim(self):
         while self.move_list.get_next() is not -1:
-            self.step()
+            self.sim_step()
             rospy.sleep(3) # pretend actions take some time
-        
-    def step(self):
+
+    def sim_step(self):
         prev = self.loc
         nextmv = self.move_list.next()
         next = nextmv[0]
         angle = nextmv[1]
         
+        print prev,next
         move_vector = self.math.get_move_vector(prev, next)
         if move_vector is not(0,0):
             angle_noise = self.math.get_noise(0, self.ang_noise)
             endpt = self.math.rotate(prev, move_vector, angle_noise)
             n_end = self.math.apply_point_noise(endpt.x, endpt.y, self.loc_noise, self.loc_noise, pret=True)
-            self.initial_angle = angle + angle_noise
+            self.initial_angle = 315 - angle + angle_noise
             self.loc = n_end
 
         self.get_ranges()
@@ -121,6 +109,3 @@ class Sonar:
             self.scan_lines.append(ln)
             self.intersection_points.append(intersect)
             self.current_angle += self.step # increment the angle to the angle of the next measurement
-
-if __name__ == '__main__':
-    Sonar()
