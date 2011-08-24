@@ -40,6 +40,8 @@ class Sonar:
         self.angle_range = rospy.get_param('sweep_angle')
         self.move_file = rospy.get_param('move_list')
         self.map_file = rospy.get_param('loc_map')
+
+        print self.step, self.max_range, 'snr'
                                         
     def reset(self):
         self.ranges = []
@@ -65,7 +67,6 @@ class Sonar:
     def run_sim(self):
         while self.move_list.get_next() is not -1:
             self.sim_step()
-            print 'step done'
             rospy.sleep(3) # pretend actions take some time
 
     def sim_step(self):
@@ -81,7 +82,7 @@ class Sonar:
             n_end = self.math.apply_point_noise(endpt.x, endpt.y, self.loc_noise, self.loc_noise, pret=True)
             self.initial_angle = 315 - angle + angle_noise
             self.loc = n_end
-
+        print self.loc
         self.get_ranges()
         self.out.publish(prev=point(prev.x, prev.y), next=point(next.x, next.y), angle=angle, ranges=self.ranges, actual=point(self.loc.x, self.loc.y))
         
@@ -90,7 +91,9 @@ class Sonar:
         """Get the ranges that the sonar would receive at its current
         map position if its sensors were perfect."""
         self.reset() # reset arrays containing scan lines, ranges etc. 
+        angles = []
         for i in range(self.scan_number): # loop over the total number of measurements to take
+            angles.append(self.current_angle)
             # get the line from the sonar to the point of max range
             ln = self.math.get_scan_line(self.loc, self.current_angle, self.max_range)
             # get the intersection point with the scan line on the map
@@ -104,6 +107,7 @@ class Sonar:
             self.scan_lines.append(ln)
             self.intersection_points.append(intersect)
             self.current_angle += self.step # increment the angle to the angle of the next measurement
+        print angles, 'sonar'
 
 if __name__ == '__main__':
     Sonar()

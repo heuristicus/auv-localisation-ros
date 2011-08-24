@@ -41,11 +41,14 @@ class Localiser:
     def weight_particle(self, sonar_ranges, particle):
         """Weights the given particle according to the difference
         between its ranges and the ranges detected by the sonar."""
+        #print sonar_ranges
+        #print particle.ranges
         prob_sum = 0
         for i in range(len(particle.ranges)):
             # Sonar returns -1 if the range received is not in the
             # tolerated range. In this case, the measurement is not
             # reliable, so only give a small weight increase.
+            #print sonar_ranges[i], particle.ranges[i]
             if sonar_ranges[i] is -1 and particle.ranges[i] is -1:
                 prob_sum += 0.03
             else:
@@ -53,6 +56,7 @@ class Localiser:
                 # measurement given that the sonar range measurement
                 # might have a certain amount of noise
                 prob_sum += self.math.gaussian(sonar_ranges[i], self.rng_noise, particle.ranges[i])
+        #print prob_sum
         particle.wt = prob_sum
         return prob_sum
 
@@ -68,14 +72,22 @@ class Localiser:
         angle = data.angle
         prev_pos = data.prev
         sonar_ranges = data.ranges
+        actual = data.actual
 
         self.generate_particles(prev_pos, angle) # only if no particles are present in the list
+        print sonar_ranges
+        #print angle
         self.particles.resample() # only if particles exist and have weights
         move_vector = self.math.get_move_vector(prev_pos, to_move)
         for particle in self.particles.list():
             particle.move(move_vector, angle)
             particle.get_ranges(self.scale)
             self.weight_particle(sonar_ranges, particle)
+            #print particle.initial_angle
+            loc_d = self.get_location_diff(actual, particle.loc)
+            print loc_d
+            if loc_d < 10:
+                print particle.ranges
             if self.use_gui:
                 mline = particle.move_line.coords
                 mv = line(point(mline[0][0], mline[0][1]), point(mline[1][0], mline[1][1]))
@@ -87,11 +99,16 @@ class Localiser:
     def get_localisation_error(self):
         lsa = self.particles.best().loc
         return (self.loc.x - lsa.x, self.loc.y - lsa.y)
+    
+    def get_location_diff(self, sonar, particle):
+        x = abs(sonar.x - particle.x)
+        y = abs(sonar.y - particle.y)
+        return x + y
 
     def get_params(self):
         """Reads parameters from a file and saves them in a dictionary"""
         self.max_range = rospy.get_param('sonar_maxrange')
-        self.min_range = rospy.get_param('sonar_minrange')        
+        self.min_range = rospy.get_param('sonar_minrange')
         self.angle_range = rospy.get_param('sweep_angle')
         self.step = rospy.get_param('sonar_step')
         self.ang_noise = rospy.get_param('angle_noise')
@@ -100,6 +117,8 @@ class Localiser:
         self.mapfile = rospy.get_param('loc_map')
         self.particle_num = rospy.get_param('particle_num')
         self.use_gui = rospy.get_param('use_gui')
+
+        print self.step, self.max_range, 'loc'
 
 if __name__ == '__main__':
     Localiser()
