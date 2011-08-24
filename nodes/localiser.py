@@ -12,14 +12,6 @@ class Localiser:
         self.map = map_rep.MapRep(self.mapfile)
         self.scale = self.map.scale
         self.math = s_math.SonarMath()
-        if self.use_sim is 1:
-            self.sonar = sonar_sim.Sonar()
-        elif self.use_sim is 0:
-            print 'not using sim'
-        else:
-            rospy.logerr('Localiser did not receive a sensible value for use_sim: %s'%(self.use_sim))
-            rospy.signal_shutdown('Invalid parameter.')
-
         self.create_subscribers()
         rospy.spin()
 
@@ -93,7 +85,7 @@ class Localiser:
         self.rng_noise = rospy.get_param('range_noise')
         self.mapfile = rospy.get_param('loc_map')
         self.particle_num = rospy.get_param('particle_num')
-        self.use_sim = rospy.get_param('use_sim')
+        #self.use_sim = rospy.get_param('use_sim')
 
 if __name__ == '__main__':
     Localiser()

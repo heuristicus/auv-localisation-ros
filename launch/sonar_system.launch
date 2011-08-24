@@ -3,9 +3,9 @@
 	<!--PARAMS-->
 
 	<!--If you are using the sonar simulator, set this to 1, otherwise to 0.
-	You must remember to uncomment the relevant nodes below - sonar_hw runs the hardware interface, sonar_raw extract extracts data from the raw sonar data. This should also be set to no if you are using the sonar_exp_sim.py node, since the data it produces does not need to be simulated.-->
+	You must remember to uncomment the relevant nodes below - sonar_hw runs the hardware interface, sonar_raw extract extracts data from the raw sonar data. This should also be set to no if you are using the sonar_exp_sim.py node, since the data it produces does not need to be simulated.  NOT NEEDED ANY MORE-->
 
-	<param name="use_sim" value="1" />
+<!--	<param name="use_sim" value="1" />-->
 	<!--The actions that the simulator should take in the map-->
 	<param name="move_list" value="$(find loc_sonar)/nodes/i.mv"/>
 	<!--Map to use for simulator and localisation-->
@@ -21,7 +21,7 @@
 	<param name="sonar_step" value="15" />
 	<!--Maximum range of the sonar in metres-->
 	<param name="sonar_maxrange" value="50" />
-	<!--Minimum range of the sonar-->
+	<!-- range of the sonar-->
 	<param name="sonar_minrange" value="0.1" />
 	<!--Sweep angle of the sonar in degrees-->
 	<param name="sweep_angle" value="270" />
@@ -34,20 +34,22 @@
 	<!--NODES-->
 
 	<!-- simulation -->
-<!--	<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' />-->
+	<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' output="screen"/>
 <!--	<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py' />-->
 
 	<!--  localisation -->
-	<node name='localiser' pkg='loc_sonar' type='localiser.py' output="screen"/>
+	<node name='localiser' pkg='loc_sonar' type='localiser.py'/>
 	
 	<!--sonar extraction-->	
 	<!--extracts bin data and so on from raw sonar messages-->
 <!--	<node name="sonar_raw_extract" pkg="loc_sonar" type="sonar_raw_extract.py" />-->
 
 	<!--sonar processing-->
-	<node name="sonar_preprocess" pkg="loc_sonar" type="sonar_preprocess.py"/>
+	<!--This node must be run if you are using a real sonar, or the experiment simulator-->
+<!--	<node name="sonar_preprocess" pkg="loc_sonar" type="sonar_preprocess.py"/>-->
 
 	<!--sonar hardware interface-->
+<!--This node must be run if you are using a real sonar-->
 <!--	<node name='sonar_hw' pkg='loc_sonar' type='sonar_hw.py' />-->
 
 </launch>

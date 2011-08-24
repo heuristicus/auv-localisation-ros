@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import roslib; roslib.load_manifest('loc_sonar')
 import rospy, s_math, map_rep, move_list
-from loc_sonar.msg import proc_sonar
+from loc_sonar.msg import proc_sonar, point
 
 class Sonar:
 
@@ -49,6 +49,7 @@ class Sonar:
 
     def make_pub(self):
         self.out = rospy.Publisher('sonar_pre', proc_sonar)
+        print self.out
         rospy.init_node('sonar_sim')
 
     def move_to_random(self, height, width):
@@ -65,6 +66,7 @@ class Sonar:
     def run_sim(self):
         while self.move_list.get_next() is not -1:
             self.sim_step()
+            print 'step done'
             rospy.sleep(3) # pretend actions take some time
 
     def sim_step(self):
@@ -77,7 +79,7 @@ class Sonar:
         move_vector = self.math.get_move_vector(prev, next)
         if move_vector is not(0,0):
             angle_noise = self.math.get_noise(0, self.ang_noise)
-            endpt = self.math.rotate(prev, move_vector, angle_noise)
+            endpt = self.math.rotate_point(prev, move_vector, angle_noise)
             n_end = self.math.apply_point_noise(endpt.x, endpt.y, self.loc_noise, self.loc_noise, pret=True)
             self.initial_angle = 315 - angle + angle_noise
             self.loc = n_end
@@ -85,10 +87,12 @@ class Sonar:
         self.get_ranges()
 
         data = proc_sonar()
-        data.prev = prev
-        data.next = next
+        data.prev = point(prev.x, prev.y) # currently sends actual previous point, not the one in the list. Should probably change this.
+        data.next = point(next.x, next.y)
         data.angle = angle
         data.ranges = self.ranges
+        print data
+        self.out.publish(data)
         
 
     def get_ranges(self):
@@ -109,3 +113,6 @@ class Sonar:
             self.scan_lines.append(ln)
             self.intersection_points.append(intersect)
             self.current_angle += self.step # increment the angle to the angle of the next measurement
+
+if __name__ == '__main__':
+    Sonar()
