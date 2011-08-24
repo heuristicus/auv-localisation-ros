@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import roslib; roslib.load_manifest('loc_sonar')
 import rospy, s_math
-from shapely.geometry import Point
 
 class Particle:
     
@@ -50,11 +49,15 @@ class Particle:
 
     def move(self, vector, angle):
         """Move the particle along a vector, and set its scan start angle. Introduces noise."""
+        if vector is (0,0):
+            # don't bother applying changes to the particles if there
+            # is no movement during the action.
+            return
         angle_noise = self.math.get_noise(0, self.ang_noise)
         # Rotate endpoint of the vector by the noisy angle
         endpt = self.math.rotate_point(self.loc, vector, angle_noise)
         # Apply noise to the endpoint location
-        n_end = Point(self.math.apply_point_noise(endpt.x, endpt.y, self.loc_noise, self.loc_noise))
+        n_end = self.math.apply_point_noise(endpt.x, endpt.y, self.loc_noise, self.loc_noise, pret=True)
         self.initial_angle = angle + angle_noise
         
         last = self.loc

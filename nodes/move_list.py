@@ -27,6 +27,13 @@ class MoveList:
         self.movelist =  ml
         #self.avg_move_length()
 
+    def get_next(self):
+        try:
+            n = self.movelist[self.pointer + 1]
+            return n
+        except IndexError:
+            return -1
+            
     def next(self):
         self.pointer += 1
         return self.current()
