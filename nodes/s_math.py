@@ -1,4 +1,6 @@
 #!/usr/bin/python
+import roslib; roslib.load_manifest('loc_sonar')
+from loc_sonar.msg import line, point
 from math import sin, radians, cos, e, pi, sqrt
 from shapely import *
 from shapely.geometry import LineString, Point
@@ -36,6 +38,10 @@ class SonarMath:
         pt = self.point_at_angle(location, angle, length)
         ln = LineString([location.coords[0], pt.coords[0]])
         return ln
+
+    def convert_line(self, ln):
+        c = ln.coords
+        return line(point(c[0][0], c[0][1]), point(c[1][0], c[1][1]))
        
     def point_at_angle(self, centre, degrees, radius):
         """Get the point at a given angle on a circle"""
@@ -83,12 +89,18 @@ class SonarMath:
         p2 = pow(e, ((-1*pow((x-mu),2)))/(2.0*pow(sigma,2)))
         return p1*p2
 
-    def make_line(self, p1, p2):
+    def make_line(self, p1, p2, tp='lnstr'):
         """Make a line between the two points."""
-        try:
-            return LineString([(p1.x, p1.y),(p2.x, p2.y)])
-        except AttributeError:
-            return LineString([(p1[0], p1[1]),(p2[0], p2[1])])
+        if tp is 'lnstr':
+            try:
+                return LineString([(p1.x, p1.y),(p2.x, p2.y)])
+            except AttributeError:
+                return LineString([(p1[0], p1[1]),(p2[0], p2[1])])
+        elif tp is 'ros':
+            try:
+                return line(point(p1.x, p1.y), point(p2.x, p2.y))
+            except AttributeError:
+                return line(point(p1[0], p1[1]), point(p2[0], p2[1]))
 
     def make_lines(self, pt_list):
         return map(self.make_line, pt_list[:-1], pt_list[1:])

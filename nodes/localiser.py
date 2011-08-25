@@ -50,7 +50,7 @@ class Localiser:
             # reliable, so only give a small weight increase.
             #print sonar_ranges[i], particle.ranges[i]
             if sonar_ranges[i] is -1 and particle.ranges[i] is -1:
-                prob_sum += 0.03
+                prob_sum += 0.00001
             else:
                 # Calculate the probability of the particle range
                 # measurement given that the sonar range measurement
@@ -79,7 +79,7 @@ class Localiser:
         actual = data.actual
 
         self.generate_particles(prev_pos, angle) # only if no particles are present in the list
-        self.particles.resample_meanvar()
+        #self.particles.resample_meanvar()
         self.particles.resample() # only if particles exist and have weights
         move_vector = self.math.get_move_vector(prev_pos, to_move)
         for particle in self.particles.list():
@@ -89,7 +89,7 @@ class Localiser:
             if self.use_gui:
                 mline = particle.move_line.coords
                 mv = line(point(mline[0][0], mline[0][1]), point(mline[1][0], mline[1][1]))
-                self.guipub.publish(weight=particle.wt, loc=point(particle.loc.x, particle.loc.y), angle=particle.initial_angle, ranges=particle.ranges, moveline=mv)
+                self.guipub.publish(weight=particle.wt, loc=point(particle.loc.x, particle.loc.y), angle=particle.initial_angle, ranges=particle.ranges, moveline=mv, scan=particle.scan)
         #print self.particles.mean
         self.guipub.publish(weight=2, loc=point(self.particles.mean[0], self.particles.mean[1]), flag=1)
         

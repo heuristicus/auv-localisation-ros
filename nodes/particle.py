@@ -42,7 +42,7 @@ class Particle:
             intersect = self.math.get_intersect_point(self.loc, ln, self.map)
             dist = self.math.intersect_distance(self.loc, intersect, self.min_range, self.max_range,)
             dist = dist/scale # normalise the distance
-            self.scan.append(ln)
+            self.scan.append(self.math.convert_line(ln))
             self.int.append(intersect)
             self.ranges.append(dist)
             self.current_angle += self.step
@@ -67,8 +67,8 @@ class Particle:
         # subtracted from this, so that the uncertainty of your
         # current bearing are taken into account.
         # subtracting this value from 315 gives an approximate of 0 to north
-        self.initial_angle = angle + angle_noise
-
+        #self.initial_angle = 315 - angle + angle_noise
+        self.initial_angle = 0
         ###### MAY CAUSE ERRORS #######
         
         last = self.loc

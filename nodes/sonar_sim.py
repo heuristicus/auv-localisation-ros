@@ -86,13 +86,13 @@ class Sonar:
             # subtracted from this, so that the uncertainty of your
             # current bearing are taken into account.
             # subtracting this value from 315 gives an approximate of 0 to north
-            self.initial_angle = angle + angle_noise
-
+            #self.initial_angle = 315 - angle + angle_noise
+            self.initial_angle = 0
             ###### MAY CAUSE ERRORS #######
 
             self.loc = n_end
         self.get_ranges()
-        self.out.publish(prev=point(prev.x, prev.y), next=point(next.x, next.y), angle=angle, ranges=self.ranges, actual=point(self.loc.x, self.loc.y))
+        self.out.publish(prev=point(prev.x, prev.y), next=point(next.x, next.y), angle=angle, ranges=self.ranges, actual=point(self.loc.x, self.loc.y), scan=self.scan_lines)
         
 
     def get_ranges(self):
@@ -110,7 +110,7 @@ class Sonar:
             dist = self.math.intersect_distance(self.loc, intersect, self.min_range, self.max_range,)
             self.ranges.append(dist) # store the calculated distance
             # Store the other objects for drawing later if necessary
-            self.scan_lines.append(ln)
+            self.scan_lines.append(self.math.convert_line(ln))
             self.intersection_points.append(intersect)
             self.current_angle += self.step # increment the angle to the angle of the next measurement
       
