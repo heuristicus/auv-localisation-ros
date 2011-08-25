@@ -79,35 +79,9 @@ class SonarMath:
 
     def gaussian(self, mu, sigma, x):
         """Get the probability of the value x on a gaussian"""
-        s2 = pow(sigma, 2)
-        #print s2
-        btm = 2*pi*s2
-        #print btm
-        sqb = sqrt(btm)
-        #print sqb
-        frc = 1/sqb
-        #print frc
-        #p1 = frc
         p1 = 1/(sqrt(2*pi*pow(sigma,2)))
-        spw = pow(sigma, 2)
-        print spw
-        spw2 = 2*spw
-        print spw2
-        xmu = x-mu
-        print xmu
-        pxmu = pow(xmu, 2)
-        print pxmu
-        div = pxmu/spw2
-        print div
-        pe = pow(e, -div)
-        print pe
         p2 = pow(e, ((-1*pow((x-mu),2)))/(2.0*pow(sigma,2)))
         return p1*p2
-
-    def normpdf(self, mu, sigma, x):
-        u = (x-mu)/abs(sigma)
-        y = (1/(sqrt(2*pi)*abs(sigma)))*pow(-u*u/2,2)
-        return y
 
     def make_line(self, p1, p2):
         """Make a line between the two points."""
