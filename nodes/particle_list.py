@@ -55,9 +55,8 @@ class ParticleList:
         discarded."""
         if not self.particles or sum(self.weights()) is 0:
             return # Make sure this is only performed if you have the data required
-        s = sum(self.weights()) # sum of the weights used to get the multiplier for the random value
-        a = self.math.calc_mean_variance([x.loc for x in self.particles], wts)
-        self.mean = a[0]
+        wts = self.weights()
+        s = sum(wts) # sum of the weights used to get the multiplier for the random value
         # get a number of random values equal to the number of particles, for which the range is 0 <= random <= sum of weights
         rands = [random.random() * s for i in range(len(self.particles))]
         self.wt_sum = []
@@ -77,9 +76,16 @@ class ParticleList:
         self.particles = [self.particles[i].copy() for i in n]
 
     def resample_meanvar(self):
-        if not self.particles or sum(self.weights()) is 0:
-            return # Make sure this is only performed if you have the data required
-        a = self.math.calc_loc_mean_variance([x.loc for x in self.particles], self.weights())
+        #if not self.particles or sum(self.weights()) is 0:
+        #    return # Make sure this is only performed if you have the data required
+        loc = self.math.calc_loc_mean_variance([x.loc for x in self.particles], self.weights())
+        angs = [x.initial_angle for x in self.particles]
+        awts = [x.ang_wt for x in self.particles]
+        print angs
+        print awts
+        ang = self.math.calc_mean_variance([x.initial_angle for x in self.particles], awts)
+        print ang
+        print loc
         
     
                         

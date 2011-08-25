@@ -8,10 +8,11 @@ class Particle:
     #### Need to fix the initialisation - do not rely on sonar. when
     #### copying the particle take the values that the particle has,
     #### not the current sonar parameters.
-    def __init__(self, loc, map_, angle, wt=0):
+    def __init__(self, loc, map_, angle, wt=0.001, ang_wt=0.001):
         self.get_params()
         self.loc = loc
         self.wt = wt
+        self.ang_wt = ang_wt
         self.scan = []
         self.int = []
         self.map = map_
@@ -32,7 +33,7 @@ class Particle:
         self.rng_noise = rospy.get_param('range_noise')
 
     def get_ranges(self, scale):
-        self.scan = []
+        self.scan = []        
         self.int = []
         self.current_angle = self.initial_angle
         self.ranges = []
@@ -49,6 +50,7 @@ class Particle:
 
     def move(self, vector, angle):
         """Move the particle along a vector, and set its scan start angle. Introduces noise."""
+        print angle, 'ptcl'
         if vector is (0,0):
             # don't bother applying changes to the particles if there
             # is no movement during the action.
@@ -64,7 +66,8 @@ class Particle:
         # might be good to set this so that a value is added or
         # subtracted from this, so that the uncertainty of your
         # current bearing are taken into account.
-        self.initial_angle = 315 - angle + angle_noise
+        # subtracting this value from 315 gives an approximate of 0 to north
+        self.initial_angle = angle + angle_noise
 
         ###### MAY CAUSE ERRORS #######
         

@@ -57,7 +57,10 @@ class Localiser:
                 # might have a certain amount of noise
                 prob_sum += self.math.gaussian(sonar_ranges[i], self.rng_noise, particle.ranges[i])
         # probability of the angle of the particle given the sonar's angle.
-        prob_sum += self.math.gaussian(sonar_angle, self.ang_noise, particle.initial_angle)
+        print sonar_angle, 'snr'
+        print particle.initial_angle, 'ptclloc'
+        particle.ang_wt = self.math.gaussian(sonar_angle, self.ang_noise, particle.initial_angle)
+        print particle.ang_wt
         particle.wt = prob_sum
         return prob_sum
 
@@ -76,6 +79,7 @@ class Localiser:
         actual = data.actual
 
         self.generate_particles(prev_pos, angle) # only if no particles are present in the list
+        self.particles.resample_meanvar()
         self.particles.resample() # only if particles exist and have weights
         move_vector = self.math.get_move_vector(prev_pos, to_move)
         for particle in self.particles.list():

@@ -63,6 +63,7 @@ class Sonar:
         self.move_to(Point(random.randint(self.loc.x - bound, self.loc.x + bound), random.randint(self.loc.y - bound, self.loc.y + bound)), random.randint(self.initial_angle - bound, self.initial_angle - bound))
 
     def run_sim(self):
+        print self.move_list.get_list()
         while self.move_list.get_next() is not -1:
             self.sim_step()
             rospy.sleep(1) # pretend actions take some time
@@ -84,7 +85,8 @@ class Sonar:
             # might be good to set this so that a value is added or
             # subtracted from this, so that the uncertainty of your
             # current bearing are taken into account.
-            self.initial_angle = 315 - angle + angle_noise
+            # subtracting this value from 315 gives an approximate of 0 to north
+            self.initial_angle = angle + angle_noise
 
             ###### MAY CAUSE ERRORS #######
 

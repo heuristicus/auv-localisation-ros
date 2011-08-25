@@ -79,9 +79,35 @@ class SonarMath:
 
     def gaussian(self, mu, sigma, x):
         """Get the probability of the value x on a gaussian"""
+        s2 = pow(sigma, 2)
+        #print s2
+        btm = 2*pi*s2
+        #print btm
+        sqb = sqrt(btm)
+        #print sqb
+        frc = 1/sqb
+        #print frc
+        #p1 = frc
         p1 = 1/(sqrt(2*pi*pow(sigma,2)))
-        p2 = pow(e, ((-1*pow((x-mu),2)))/2.0*pow(sigma,2))
+        spw = pow(sigma, 2)
+        print spw
+        spw2 = 2*spw
+        print spw2
+        xmu = x-mu
+        print xmu
+        pxmu = pow(xmu, 2)
+        print pxmu
+        div = pxmu/spw2
+        print div
+        pe = pow(e, -div)
+        print pe
+        p2 = pow(e, ((-1*pow((x-mu),2)))/(2.0*pow(sigma,2)))
         return p1*p2
+
+    def normpdf(self, mu, sigma, x):
+        u = (x-mu)/abs(sigma)
+        y = (1/(sqrt(2*pi)*abs(sigma)))*pow(-u*u/2,2)
+        return y
 
     def make_line(self, p1, p2):
         """Make a line between the two points."""
@@ -99,15 +125,14 @@ class SonarMath:
     def calc_loc_mean_variance(self, point_list, weight_list):
         x = [point.x for point in point_list]
         y = [point.y for point in point_list]
-        xval = self.calc_mean_variance(x, weight_list)
-        yval = self.calc_mean_variance(y, weight_list)
-            
-        return [(xmean, ymean),(xvar, yvar)]
+        print weight_list
+        xmv = self.calc_mean_variance(x, weight_list)
+        ymv = self.calc_mean_variance(y, weight_list)
+        return [xmv, ymv]
 
     def calc_mean_variance(self, val_list, weight_list):
         wsum = sum(weight_list)
         mean = self.calc_mean(val_list, weight_list)
-        print mean
         var = self.calc_var(val_list, weight_list, mean)
         return (mean, var)
 
@@ -129,5 +154,6 @@ if __name__ == '__main__':
     #    print a.get_noise(0,5)
     #a.rotate_vector(Point(20,8), (40,80), -30)
     #print a.get_move_vector(Point(10,10), Point(5,5))
-    #print a.gaussian(2,1,2)
-    print a.calc_mean_variance([5,6,7,1,2,3], [0.1,0.4,0.7,0.9,0.3,0.6])
+    print a.gaussian(356.34777832,5,356.138794019)
+    #print a.normpdf(356.34777832,5,356.138794019)
+    #print a.calc_mean_variance([5,6,7,1,2,3], [0.1,0.4,0.7,0.9,0.3,0.6])

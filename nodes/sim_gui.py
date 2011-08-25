@@ -53,8 +53,7 @@ class gui:
         if data.flag is 1:
             draw_point(self.canvas, data.loc, weight=data.weight, colour='red', tag='particle')
         else:
-            return
-            #draw_point(self.canvas, data.loc, weight=data.weight, colour='black', tag='particle')
+            draw_point(self.canvas, data.loc, weight=data.weight, colour='black', tag='particle')
         #draw_line(self.canvas, data.moveline, tag='mvln')
         #self.canvas.create_text(data.loc.x, data.loc.y, text='%d'%(data.weight))
 
