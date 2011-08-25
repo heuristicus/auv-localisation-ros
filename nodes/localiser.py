@@ -41,33 +41,10 @@ class Localiser:
     def weight_particle(self, sonar_ranges, sonar_angle, particle):
         """Weights the given particle according to the difference
         between its ranges and the ranges detected by the sonar."""
-        #print sonar_ranges
-        #print particle.ranges
-        prob_sum = 0
-        for i in range(len(particle.ranges)):
-            # Sonar returns -1 if the range received is not in the
-            # tolerated range. In this case, the measurement is not
-            # reliable, so only give a small weight increase.
-            #print sonar_ranges[i], particle.ranges[i]
-            if sonar_ranges[i] < 0 and particle.ranges[i] < 0:
-                print 'a'
-                prob_sum += 0.00001
-            else:
-                'bbbbbb'
-                #print sonar_ranges[i], particle.ranges[i]
-                # Calculate the probability of the particle range
-                # measurement given that the sonar range measurement
-                # might have a certain amount of noise
-                z = self.math.gaussian(sonar_ranges[i], 5, particle.ranges[i])
-                #print z
-                prob_sum += z
-        # probability of the angle of the particle given the sonar's angle.
-        #print sonar_angle, 'snr'
-        #print particle.initial_angle, 'ptclloc'
-        particle.ang_wt = self.math.gaussian(sonar_angle, self.ang_noise, particle.initial_angle)
-        #print particle.ang_wt
-        particle.wt = prob_sum
-        return prob_sum
+        for sr, pr in zip(sonar_ranges, particle.ranges):
+            print sr,pr, sr==pr, sr is pr
+            particle.wt += self.math.gaussian(sr, 8, pr)
+        print particle.wt
 
     def update(self, data):
         # maybe there should be separate methods which update based on
@@ -87,6 +64,7 @@ class Localiser:
         #self.particles.resample_meanvar()
         self.particles.resample() # only if particles exist and have weights
         move_vector = self.math.get_move_vector(prev_pos, to_move)
+        print '-------------'
         for particle in self.particles.list():
             particle.move(move_vector, angle)
             particle.get_ranges(self.scale)

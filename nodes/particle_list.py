@@ -53,7 +53,7 @@ class ParticleList:
         particles with a higher weight have a higher probability of
         being chosen to be duplicated. Any particles not chosen are
         discarded."""
-        if not self.particles or sum(self.weights()) is 0:
+        if not self.particles or sum(self.weights()) == 0:
             return # Make sure this is only performed if you have the data required
         wts = self.weights()
         s = sum(wts) # sum of the weights used to get the multiplier for the random value
@@ -63,7 +63,7 @@ class ParticleList:
         # get a list of values that correspond to the upper bounds for
         # a certain particle's weight.
         for i in range(len(wts)):
-            if i is 0:
+            if i == 0:
                 self.wt_sum.append(wts[i])
             else:
                 self.wt_sum.append(wts[i] + self.wt_sum[i-1])

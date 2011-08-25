@@ -35,7 +35,7 @@ def main():
             f.write('newtest\n')
             f.write('----START----: %s\n'%(time.time()))
             f.close()
-            while s.sim_step() is not -1:
+            while s.sim_step() != -1:
                 continue
             f = open(out, 'a')
             f.write('step 99999\n')

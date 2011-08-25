@@ -51,14 +51,14 @@ def get_first(arr):
     - `arr`:
     """
     for i in range(len(arr)):
-        if arr[i] is not 0:
+        if arr[i] != 0:
             return i
     return 0
 
     
 def save_array():
     global return_arr, x, y, rng
-    if x is 0 or y is 0 or rng is 0:
+    if x == 0 or y == 0 or rng == 0:
         return
     else:
         # average of the two ranges if there are for a certain angle

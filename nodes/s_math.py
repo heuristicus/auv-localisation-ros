@@ -54,7 +54,7 @@ class SonarMath:
         noise_ranges = []
         for i in lst:
             # only apply noise if the value is not an error value
-            noise_ranges.append(random.gauss(i,sigma) if i is not -1 else -1)
+            noise_ranges.append(random.gauss(i,sigma) if i != -1 else -1)
         return noise_ranges
 
     def apply_point_noise(self, x, y, xsigma, ysigma, pret=False):
@@ -91,12 +91,12 @@ class SonarMath:
 
     def make_line(self, p1, p2, tp='lnstr'):
         """Make a line between the two points."""
-        if tp is 'lnstr':
+        if tp == 'lnstr':
             try:
                 return LineString([(p1.x, p1.y),(p2.x, p2.y)])
             except AttributeError:
                 return LineString([(p1[0], p1[1]),(p2[0], p2[1])])
-        elif tp is 'ros':
+        elif tp == 'ros':
             try:
                 return line(point(p1.x, p1.y), point(p2.x, p2.y))
             except AttributeError:

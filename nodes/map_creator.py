@@ -35,9 +35,9 @@ def create_canvas():
 
 def create_move_list():
     global mv_flag
-    if mv_flag is 0:
+    if mv_flag == 0:
         tkMessageBox.showwarning("Info", "Click on the map to define a set of points to travel along. The first click indicates the point at which to put the sonar, and the second the rotation of the sonar.")
-    mv_flag = 1 if mv_flag is 0 else 0
+    mv_flag = 1 if mv_flag == 0 else 0
     
 def save_map_to_file():
     f = tkFileDialog.asksaveasfile(defaultextension='.map')
@@ -63,15 +63,15 @@ def m1down(event):
     # added is the same as the one that is close.
     global mv_flag
     if mv_flag: # Creates movement vectors and rotations
-        if len(mv_points) is not len(rotations):
+        if len(mv_points) != len(rotations):
             rotations.extend([event.x, event.y])
-            if len(mv_points) is not 0:
+            if len(mv_points) != 0:
                 draw_move_point()
         else:
             mv_points.extend([event.x, event.y])
     else: # Creates lines for the map
         point_list.extend([event.x, event.y])
-        if len(point_list) % 4 is 0:
+        if len(point_list) % 4 == 0:
             canvas.create_line(*point_list[-4:])
     
 def draw_move_point():

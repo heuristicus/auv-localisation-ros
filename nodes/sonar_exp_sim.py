@@ -59,7 +59,7 @@ class ExpSonar:
             try:
                 f = open(fname, 'r')
                 # print '%s/prc_%d_%d_%d.txt'%(self.fileloc, p[0],p[1], self.rng)
-                data.prev = point(self.mv[i - 1][0],self.mv[i - 1][1]) if i is not 0 else point(self.mv[i][0], self.mv[i][1])
+                data.prev = point(self.mv[i - 1][0],self.mv[i - 1][1]) if i != 0 else point(self.mv[i][0], self.mv[i][1])
                 data.next = point(self.mv[i][0], self.mv[i][1])
                 data.angle = 0
                 data.ranges = map(float, f.read().split(' '))

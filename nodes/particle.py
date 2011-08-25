@@ -54,7 +54,7 @@ class Particle:
     def move(self, vector, angle):
         """Move the particle along a vector, and set its scan start angle. Introduces noise."""
         #print angle, 'ptcl'
-        if vector is (0,0):
+        if vector == (0,0):
             # don't bother applying changes to the particles if there
             # is no movement during the action.
             return

@@ -30,7 +30,7 @@
 
 	
 	<!--Number of particles to use in localisation-->
-	<param name="particle_num" value="5"/>
+	<param name="particle_num" value="15"/>
 
 	<!--NODES-->
 
