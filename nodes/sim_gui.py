@@ -47,8 +47,8 @@ class gui:
     def sonar(self, data):
         #self.canvas.delete('sonar')
         draw_point(self.canvas, data.actual, tag='sonar', colour='red')
-        for ln in data.scan:
-            draw_line(self.canvas, ln, tag='scan')
+        #for ln in data.scan:
+         #   draw_line(self.canvas, ln, tag='scan')
 
     def particle(self, data):
         #self.canvas.delete('particle')
@@ -56,9 +56,9 @@ class gui:
             draw_point(self.canvas, data.loc, weight=data.weight, colour='red', tag='particle')
         else:
             draw_point(self.canvas, data.loc, weight=data.weight, colour='black', tag='particle')
-        for ln in data.scan:
-            draw_line(self.canvas, ln, tag='scan')
-        #draw_line(self.canvas, data.moveline, tag='mvln')
+        #for ln in data.scan:
+         #   draw_line(self.canvas, ln, tag='scan')
+        draw_line(self.canvas, data.moveline, tag='mvln')
         #self.canvas.create_text(data.loc.x, data.loc.y, text='%d'%(data.weight))
 
     def draw_map(self):

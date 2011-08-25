@@ -49,18 +49,23 @@ class Localiser:
             # tolerated range. In this case, the measurement is not
             # reliable, so only give a small weight increase.
             #print sonar_ranges[i], particle.ranges[i]
-            if sonar_ranges[i] is -1 and particle.ranges[i] is -1:
+            if sonar_ranges[i] < 0 and particle.ranges[i] < 0:
+                print 'a'
                 prob_sum += 0.00001
             else:
+                'bbbbbb'
+                #print sonar_ranges[i], particle.ranges[i]
                 # Calculate the probability of the particle range
                 # measurement given that the sonar range measurement
                 # might have a certain amount of noise
-                prob_sum += self.math.gaussian(sonar_ranges[i], self.rng_noise, particle.ranges[i])
+                z = self.math.gaussian(sonar_ranges[i], 5, particle.ranges[i])
+                #print z
+                prob_sum += z
         # probability of the angle of the particle given the sonar's angle.
-        print sonar_angle, 'snr'
-        print particle.initial_angle, 'ptclloc'
+        #print sonar_angle, 'snr'
+        #print particle.initial_angle, 'ptclloc'
         particle.ang_wt = self.math.gaussian(sonar_angle, self.ang_noise, particle.initial_angle)
-        print particle.ang_wt
+        #print particle.ang_wt
         particle.wt = prob_sum
         return prob_sum
 

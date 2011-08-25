@@ -37,25 +37,29 @@ class Particle:
         self.int = []
         self.current_angle = self.initial_angle
         self.ranges = []
+        #a = []
         for i in range(self.scan_number):
+            #a.append(self.current_angle)
             ln = self.math.get_scan_line(self.loc, self.current_angle, self.max_range)
             intersect = self.math.get_intersect_point(self.loc, ln, self.map)
-            dist = self.math.intersect_distance(self.loc, intersect, self.min_range, self.max_range,)
+            dist = self.math.intersect_distance(self.loc, intersect, self.min_range, self.max_range)
             dist = dist/scale # normalise the distance
             self.scan.append(self.math.convert_line(ln))
             self.int.append(intersect)
             self.ranges.append(dist)
             self.current_angle += self.step
-        self.math.apply_range_noise(self.ranges, self.rng_noise)
+        #print map(int,a)
+        #self.math.apply_range_noise(self.ranges, self.rng_noise)
 
     def move(self, vector, angle):
         """Move the particle along a vector, and set its scan start angle. Introduces noise."""
-        print angle, 'ptcl'
+        #print angle, 'ptcl'
         if vector is (0,0):
             # don't bother applying changes to the particles if there
             # is no movement during the action.
             return
         angle_noise = self.math.get_noise(0, self.ang_noise)
+        #angle_noise = 0
         # Rotate endpoint of the vector by the noisy angle
         endpt = self.math.rotate_point(self.loc, vector, angle_noise)
         # Apply noise to the endpoint location
@@ -67,8 +71,14 @@ class Particle:
         # subtracted from this, so that the uncertainty of your
         # current bearing are taken into account.
         # subtracting this value from 315 gives an approximate of 0 to north
+        
+        #print self.initial_angle, 'b', angle
+        #self.initial_angle = angle + angle_noise
         #self.initial_angle = 315 - angle + angle_noise
-        self.initial_angle = 0
+        self.initial_angle = angle
+        #print self.initial_angle, 'a', angle
+        
+        #self.initial_angle = 0
         ###### MAY CAUSE ERRORS #######
         
         last = self.loc

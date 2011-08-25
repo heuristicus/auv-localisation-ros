@@ -111,7 +111,7 @@ class SonarMath:
     def calc_loc_mean_variance(self, point_list, weight_list):
         x = [point.x for point in point_list]
         y = [point.y for point in point_list]
-        print weight_list
+        #print weight_list
         xmv = self.calc_mean_variance(x, weight_list)
         ymv = self.calc_mean_variance(y, weight_list)
         return [xmv, ymv]

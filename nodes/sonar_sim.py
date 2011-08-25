@@ -63,7 +63,6 @@ class Sonar:
         self.move_to(Point(random.randint(self.loc.x - bound, self.loc.x + bound), random.randint(self.loc.y - bound, self.loc.y + bound)), random.randint(self.initial_angle - bound, self.initial_angle - bound))
 
     def run_sim(self):
-        print self.move_list.get_list()
         while self.move_list.get_next() is not -1:
             self.sim_step()
             rospy.sleep(1) # pretend actions take some time
@@ -77,6 +76,7 @@ class Sonar:
         move_vector = self.math.get_move_vector(prev, next)
         if move_vector is not(0,0):
             angle_noise = self.math.get_noise(0, self.ang_noise)
+            #angle_noise = 0
             endpt = self.math.rotate_point(prev, move_vector, angle_noise)
             n_end = self.math.apply_point_noise(endpt.x, endpt.y, self.loc_noise, self.loc_noise, pret=True)
 
@@ -86,20 +86,24 @@ class Sonar:
             # subtracted from this, so that the uncertainty of your
             # current bearing are taken into account.
             # subtracting this value from 315 gives an approximate of 0 to north
-            #self.initial_angle = 315 - angle + angle_noise
-            self.initial_angle = 0
+            #print self.initial_angle, 'SONARb', angle
+            #self.initial_angle = 315 - printangle + angle_noise
+            self.initial_angle = angle + angle_noise
+            #print self.initial_angle, 'SONARa', angle
+            #self.initial_angle = 0
             ###### MAY CAUSE ERRORS #######
 
             self.loc = n_end
         self.get_ranges()
         self.out.publish(prev=point(prev.x, prev.y), next=point(next.x, next.y), angle=angle, ranges=self.ranges, actual=point(self.loc.x, self.loc.y), scan=self.scan_lines)
         
-
     def get_ranges(self):
         """Get the ranges that the sonar would receive at its current
         map position if its sensors were perfect."""
         self.reset() # reset arrays containing scan lines, ranges etc. 
+        #a = []
         for i in range(self.scan_number): # loop over the total number of measurements to take
+            #a.append(self.current_angle)
             # get the line from the sonar to the point of max range
             ln = self.math.get_scan_line(self.loc, self.current_angle, self.max_range)
             # get the intersection point with the scan line on the map
@@ -107,12 +111,13 @@ class Sonar:
             intersect = self.math.get_intersect_point(self.loc, ln, self.map)
             # calculate the distance to the intersection point, with
             # some parameters which limit the data to a certain range
-            dist = self.math.intersect_distance(self.loc, intersect, self.min_range, self.max_range,)
+            dist = self.math.intersect_distance(self.loc, intersect, self.min_range, self.max_range)
             self.ranges.append(dist) # store the calculated distance
             # Store the other objects for drawing later if necessary
             self.scan_lines.append(self.math.convert_line(ln))
             self.intersection_points.append(intersect)
             self.current_angle += self.step # increment the angle to the angle of the next measurement
-      
+        #print map(int, a)
+
 if __name__ == '__main__':
     Sonar()
