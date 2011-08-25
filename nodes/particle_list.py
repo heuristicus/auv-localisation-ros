@@ -1,12 +1,14 @@
 #!/usr/bin/python
-import random
+import random, s_math, particle
 
 class ParticleList:
     
     def __init__(self, particle_num):
         self.max_p = particle_num
         self.particles = []
-
+        self.math = s_math.SonarMath()
+        self.mean = (0,0)
+        
     def add(self, particle):
         if len(self.particles) < self.max_p:
             self.particles.append(particle)
@@ -53,9 +55,9 @@ class ParticleList:
         discarded."""
         if not self.particles or sum(self.weights()) is 0:
             return # Make sure this is only performed if you have the data required
-        new_list = []
-        wts = self.weights()
-        s = sum(wts) # sum of the weights used to get the multiplier for the random value
+        s = sum(self.weights()) # sum of the weights used to get the multiplier for the random value
+        a = self.math.calc_mean_variance([x.loc for x in self.particles], wts)
+        self.mean = a[0]
         # get a number of random values equal to the number of particles, for which the range is 0 <= random <= sum of weights
         rands = [random.random() * s for i in range(len(self.particles))]
         self.wt_sum = []
@@ -73,6 +75,13 @@ class ParticleList:
         # Create copies of the particles in the array locations from
         # the above calculation
         self.particles = [self.particles[i].copy() for i in n]
+
+    def resample_meanvar(self):
+        if not self.particles or sum(self.weights()) is 0:
+            return # Make sure this is only performed if you have the data required
+        a = self.math.calc_loc_mean_variance([x.loc for x in self.particles], self.weights())
+        
+    
                         
     def wt_less(self, val):
         """Returns the list index of the range that the given value

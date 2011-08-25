@@ -96,36 +96,38 @@ class SonarMath:
     def pt_dist(self, p1, p2):
         return sqrt(pow(p2[0] - p1[0], 2) + pow(p2[1] - p1[1], 2))
 
-    def calc_mean_variance(self, point_list, weight_list):
-        wsum = sum(weight_list)
-        xmean = 0
-        ymean = 0
-        xvar = 0
-        yvar = 0
-        for i in range(len(point_list)):
-            xptwt = weight_list[i] * point_list[i][0]
-            yptwt = weight_list[i] * point_list[i][1]
-            xmean += xptwt
-            ymean += yptwt
-
-        xmean = xmean/wsum
-        ymean = ymean/wsum
-
-        for i in range(len(point_list)):
-            xptwt = weight_list[i] * point_list[i][0]
-            yptwt = weight_list[i] * point_list[i][1]
-            xvar += pow(xptwt-xmean, 2)
-            yvar += pow(yptwt-ymean, 2)
-            
-        xvar = xvar/xsum
-        yvar = yvar/wsum
+    def calc_loc_mean_variance(self, point_list, weight_list):
+        x = [point.x for point in point_list]
+        y = [point.y for point in point_list]
+        xval = self.calc_mean_variance(x, weight_list)
+        yval = self.calc_mean_variance(y, weight_list)
             
         return [(xmean, ymean),(xvar, yvar)]
 
+    def calc_mean_variance(self, val_list, weight_list):
+        wsum = sum(weight_list)
+        mean = self.calc_mean(val_list, weight_list)
+        print mean
+        var = self.calc_var(val_list, weight_list, mean)
+        return (mean, var)
+
+    def calc_mean(self, val_list, weight_list):
+        mean = 0
+        for val, wt in zip(val_list, weight_list):
+            mean += wt * val
+        return mean / sum(weight_list)
+    
+    def calc_var(self, val_list, weight_list, mean):
+        var = 0
+        for val, wt in zip(val_list, weight_list):
+            var += pow(wt * (val - mean), 2)
+        return var / sum(weight_list)
+
 if __name__ == '__main__':
     a = SonarMath()
-    for i in range(100):
-        print a.get_noise(0,5)
+    #for i in range(100):
+    #    print a.get_noise(0,5)
     #a.rotate_vector(Point(20,8), (40,80), -30)
     #print a.get_move_vector(Point(10,10), Point(5,5))
     #print a.gaussian(2,1,2)
+    print a.calc_mean_variance([5,6,7,1,2,3], [0.1,0.4,0.7,0.9,0.3,0.6])

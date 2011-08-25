@@ -61,6 +61,9 @@ class Particle:
 
         ###### MAY CAUSE ERRORS #######
 
+        # might be good to set this so that a value is added or
+        # subtracted from this, so that the uncertainty of your
+        # current bearing are taken into account.
         self.initial_angle = 315 - angle + angle_noise
 
         ###### MAY CAUSE ERRORS #######

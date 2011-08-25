@@ -38,7 +38,7 @@ class Localiser:
                 # Create a particle within a gaussian range of the current sonar location
                 self.particles.add(particle.Particle(self.math.apply_point_noise(loc.x, loc.y, self.loc_noise, self.loc_noise, pret=True), self.map, self.math.get_noise(angle, self.ang_noise)))
 
-    def weight_particle(self, sonar_ranges, particle):
+    def weight_particle(self, sonar_ranges, sonar_angle, particle):
         """Weights the given particle according to the difference
         between its ranges and the ranges detected by the sonar."""
         #print sonar_ranges
@@ -56,7 +56,8 @@ class Localiser:
                 # measurement given that the sonar range measurement
                 # might have a certain amount of noise
                 prob_sum += self.math.gaussian(sonar_ranges[i], self.rng_noise, particle.ranges[i])
-        #print prob_sum
+        # probability of the angle of the particle given the sonar's angle.
+        prob_sum += self.math.gaussian(sonar_angle, self.ang_noise, particle.initial_angle)
         particle.wt = prob_sum
         return prob_sum
 
@@ -80,11 +81,13 @@ class Localiser:
         for particle in self.particles.list():
             particle.move(move_vector, angle)
             particle.get_ranges(self.scale)
-            self.weight_particle(sonar_ranges, particle)
+            self.weight_particle(sonar_ranges, angle, particle)
             if self.use_gui:
                 mline = particle.move_line.coords
                 mv = line(point(mline[0][0], mline[0][1]), point(mline[1][0], mline[1][1]))
                 self.guipub.publish(weight=particle.wt, loc=point(particle.loc.x, particle.loc.y), angle=particle.initial_angle, ranges=particle.ranges, moveline=mv)
+        #print self.particles.mean
+        self.guipub.publish(weight=2, loc=point(self.particles.mean[0], self.particles.mean[1]), flag=1)
         
     def get_localisation_error(self):
         lsa = self.particles.best().loc

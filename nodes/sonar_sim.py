@@ -65,7 +65,7 @@ class Sonar:
     def run_sim(self):
         while self.move_list.get_next() is not -1:
             self.sim_step()
-            rospy.sleep(3) # pretend actions take some time
+            rospy.sleep(1) # pretend actions take some time
 
     def sim_step(self):
         prev = self.loc
@@ -81,6 +81,9 @@ class Sonar:
 
             ###### MAY CAUSE ERRORS #######
 
+            # might be good to set this so that a value is added or
+            # subtracted from this, so that the uncertainty of your
+            # current bearing are taken into account.
             self.initial_angle = 315 - angle + angle_noise
 
             ###### MAY CAUSE ERRORS #######
