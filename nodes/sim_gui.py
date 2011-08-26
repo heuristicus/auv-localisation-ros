@@ -52,8 +52,8 @@ class gui:
 
     def particle(self, data):
         #self.canvas.delete('particle')
-        if data.flag is 1:
-            draw_point(self.canvas, data.loc, weight=data.weight, colour='red', tag='particle')
+        if data.flag == 1:
+            draw_point(self.canvas, data.loc, weight=data.weight, colour='red', tag='mean')
         else:
             draw_point(self.canvas, data.loc, weight=data.weight, colour='black', tag='particle')
         #for ln in data.scan:
@@ -79,11 +79,14 @@ def draw_line(canvas, line, tag=''):
 
 def draw_point(canvas, point, weight=0, colour='black', tag=''):
     pt = point
+    print weight*10
     if not point: return
+    fl = 'red' if tag == 'mean' else None        
     if weight == 0:
-        canvas.create_oval(pt.x - 1, pt.y - 1, pt.x + 1, pt.y + 1, tags=tag, outline=colour)
+        canvas.create_oval(pt.x - 1, pt.y - 1, pt.x + 1, pt.y + 1, tags=tag, outline=colour, fill=fl)
     else:
-        canvas.create_oval(pt.x - weight*5, pt.y - weight*5, pt.x + weight*5, pt.y + weight*5, tags=tag, outline=colour)
+        canvas.create_oval(pt.x - weight*10, pt.y - weight*10, pt.x + weight*10, pt.y + weight*10, tags=tag, outline=colour, fill=fl)
+
 def draw_circle_from_centre(canvas, radius, centre):
     # probably the wrong way around, technically, but since it's a
     # circle it makes no difference really.

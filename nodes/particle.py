@@ -5,9 +5,6 @@ import rospy, s_math
 class Particle:
     
 
-    #### Need to fix the initialisation - do not rely on sonar. when
-    #### copying the particle take the values that the particle has,
-    #### not the current sonar parameters.
     def __init__(self, loc, map_, angle, wt=0.001, ang_wt=0.001):
         self.get_params()
         self.loc = loc
@@ -36,7 +33,7 @@ class Particle:
         self.scan = []        
         self.int = []
         self.current_angle = self.initial_angle
-        self.ranges = []
+        self.ranges = [None for x in range(360)]
         #a = []
         for i in range(self.scan_number):
             #a.append(self.current_angle)
@@ -46,8 +43,9 @@ class Particle:
             dist = dist/scale # normalise the distance
             self.scan.append(self.math.convert_line(ln))
             self.int.append(intersect)
-            self.ranges.append(dist)
+            self.ranges[int(current_angle)] = dist
             self.current_angle += self.step
+        print ranges
         #print map(int,a)
         #self.math.apply_range_noise(self.ranges, self.rng_noise)
 
@@ -57,6 +55,7 @@ class Particle:
         if vector == (0,0):
             # don't bother applying changes to the particles if there
             # is no movement during the action.
+            self.move_line = self.math.make_line(self.loc, self.loc)
             return
         angle_noise = self.math.get_noise(0, self.ang_noise)
         #angle_noise = 0

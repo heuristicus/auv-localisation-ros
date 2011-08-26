@@ -57,6 +57,8 @@ class ParticleList:
             return # Make sure this is only performed if you have the data required
         wts = self.weights()
         s = sum(wts) # sum of the weights used to get the multiplier for the random value
+        mvr = self.math.calc_loc_mean_variance([x.loc for x in self.particles], self.weights())
+        self.mean = (mvr[0][0], mvr[1][0])
         # get a number of random values equal to the number of particles, for which the range is 0 <= random <= sum of weights
         rands = [random.random() * s for i in range(len(self.particles))]
         self.wt_sum = []
@@ -81,12 +83,14 @@ class ParticleList:
         loc = self.math.calc_loc_mean_variance([x.loc for x in self.particles], self.weights())
         angs = [x.initial_angle for x in self.particles]
         awts = [x.ang_wt for x in self.particles]
-        print angs
-        print awts
         ang = self.math.calc_mean_variance([x.initial_angle for x in self.particles], awts)
-        print ang
-        print loc
-        
+        self.mean = (loc[0][0], loc[1][0])
+        m = self.particles[0].map
+        self.particles = []
+        for i in range(self.max_p):
+            l = self.math.apply_point_noise(loc[0][0], loc[1][0], loc[0][1], loc[1][1], pret=True)
+            a = self.math.get_noise(ang[0], ang[1])
+            self.particles.append(particle.Particle(l, m, a))
     
                         
     def wt_less(self, val):

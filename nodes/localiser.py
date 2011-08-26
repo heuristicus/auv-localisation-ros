@@ -42,9 +42,8 @@ class Localiser:
         """Weights the given particle according to the difference
         between its ranges and the ranges detected by the sonar."""
         for sr, pr in zip(sonar_ranges, particle.ranges):
-            print sr,pr, sr==pr, sr is pr
-            particle.wt += self.math.gaussian(sr, 8, pr)
-        print particle.wt
+            particle.wt += 0.0001 if sr == pr else self.math.gaussian(sr, 5, pr)
+        #print particle.wt
 
     def update(self, data):
         # maybe there should be separate methods which update based on
@@ -61,10 +60,12 @@ class Localiser:
         actual = data.actual
 
         self.generate_particles(prev_pos, angle) # only if no particles are present in the list
-        #self.particles.resample_meanvar()
-        self.particles.resample() # only if particles exist and have weights
+        self.particles.resample_meanvar()
+        #self.particles.resample() # only if particles exist and have weights
+        #for particle in self.particles.list():
+         #   self.guipub.publish(weight=0.2, loc=point(particle.loc.x, particle.loc.y), angle=particle.initial_angle)
         move_vector = self.math.get_move_vector(prev_pos, to_move)
-        print '-------------'
+        #print '-------------'
         for particle in self.particles.list():
             particle.move(move_vector, angle)
             particle.get_ranges(self.scale)
@@ -72,9 +73,9 @@ class Localiser:
             if self.use_gui:
                 mline = particle.move_line.coords
                 mv = line(point(mline[0][0], mline[0][1]), point(mline[1][0], mline[1][1]))
-                self.guipub.publish(weight=particle.wt, loc=point(particle.loc.x, particle.loc.y), angle=particle.initial_angle, ranges=particle.ranges, moveline=mv, scan=particle.scan)
+                self.guipub.publish(weight=particle.wt, loc=point(particle.loc.x, particle.loc.y), angle=particle.initial_angle, ranges=particle.ranges, scan=particle.scan)
         #print self.particles.mean
-        self.guipub.publish(weight=2, loc=point(self.particles.mean[0], self.particles.mean[1]), flag=1)
+        self.guipub.publish(weight=0.2, loc=point(self.particles.mean[0], self.particles.mean[1]), flag=1)
         
     def get_localisation_error(self):
         lsa = self.particles.best().loc
@@ -97,8 +98,6 @@ class Localiser:
         self.mapfile = rospy.get_param('loc_map')
         self.particle_num = rospy.get_param('particle_num')
         self.use_gui = rospy.get_param('use_gui')
-
-        print self.step, self.max_range, 'loc'
 
 if __name__ == '__main__':
     Localiser()
