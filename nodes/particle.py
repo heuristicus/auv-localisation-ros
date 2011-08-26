@@ -33,19 +33,23 @@ class Particle:
         self.scan = []        
         self.int = []
         self.current_angle = self.initial_angle
-        self.ranges = [None for x in range(360)]
-        #a = []
+        #self.ranges = []
+        self.ranges = [-2 for x in range(360)]
+        a = []
         for i in range(self.scan_number):
-            #a.append(self.current_angle)
+            a.append(self.current_angle)
             ln = self.math.get_scan_line(self.loc, self.current_angle, self.max_range)
             intersect = self.math.get_intersect_point(self.loc, ln, self.map)
             dist = self.math.intersect_distance(self.loc, intersect, self.min_range, self.max_range)
             dist = dist/scale # normalise the distance
             self.scan.append(self.math.convert_line(ln))
             self.int.append(intersect)
-            self.ranges[int(current_angle)] = dist
+            #self.ranges.append(dist)
+            self.ranges[int(self.current_angle%360)] = dist
             self.current_angle += self.step
-        print ranges
+        #print [self.ranges[int(an%360)] for an in a]
+        print [int(an%360) for an in a]
+        #print self.ranges
         #print map(int,a)
         #self.math.apply_range_noise(self.ranges, self.rng_noise)
 

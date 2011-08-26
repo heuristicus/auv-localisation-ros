@@ -79,6 +79,7 @@ class SonarMath:
         sn = sin(radians(angle))
         cs = cos(radians(angle))
         pt = (centre.x + vector[0], centre.y + vector[1])
+
         x = pt[0]*cs - pt[1]*sn + centre.x + centre.y*sn - centre.x*cs
         y = pt[0]*sn + pt[1]*cs + centre.y - centre.x*sn - centre.y*cs
         return Point(x,y)
@@ -111,7 +112,6 @@ class SonarMath:
     def calc_loc_mean_variance(self, point_list, weight_list):
         x = [point.x for point in point_list]
         y = [point.y for point in point_list]
-        #print weight_list
         xmv = self.calc_mean_variance(x, weight_list)
         ymv = self.calc_mean_variance(y, weight_list)
         return [xmv, ymv]

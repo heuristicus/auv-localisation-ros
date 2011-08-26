@@ -81,6 +81,7 @@ class ParticleList:
         #if not self.particles or sum(self.weights()) is 0:
         #    return # Make sure this is only performed if you have the data required
         loc = self.math.calc_loc_mean_variance([x.loc for x in self.particles], self.weights())
+        print loc
         angs = [x.initial_angle for x in self.particles]
         awts = [x.ang_wt for x in self.particles]
         ang = self.math.calc_mean_variance([x.initial_angle for x in self.particles], awts)
@@ -88,8 +89,10 @@ class ParticleList:
         m = self.particles[0].map
         self.particles = []
         for i in range(self.max_p):
-            l = self.math.apply_point_noise(loc[0][0], loc[1][0], loc[0][1], loc[1][1], pret=True)
-            a = self.math.get_noise(ang[0], ang[1])
+            #l = self.math.apply_point_noise(loc[0][0], loc[1][0], loc[0][1], loc[1][1], pret=True)
+            #a = self.math.get_noise(ang[0], ang[1])
+            l = self.math.apply_point_noise(loc[0][0], loc[1][0], 10, 10, pret=True)
+            a = self.math.get_noise(ang[0], 5)
             self.particles.append(particle.Particle(l, m, a))
     
                         
