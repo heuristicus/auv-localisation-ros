@@ -30,7 +30,7 @@
 
 	
 	<!--Number of particles to use in localisation-->
-	<param name="particle_num" value="15"/>
+	<param name="particle_num" value="5"/>
 
 	<!--NODES-->
 
@@ -38,8 +38,8 @@
 	<node name="sim_gui" pkg="loc_sonar" type="sim_gui.py" output="screen"/>
 	
 	<!-- simulation -->
-	<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' output="screen"/>
-<!--	<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py' />-->
+	<!--<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' output="screen"/>-->
+<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py'/>
 
 	<!--  localisation -->
 	<node name='localiser' pkg='loc_sonar' type='localiser.py' output="screen"/>
@@ -50,7 +50,7 @@
 
 	<!--sonar processing-->
 	<!--This node must be run if you are using a real sonar, or the experiment simulator-->
-<!--	<node name="sonar_preprocess" pkg="loc_sonar" type="sonar_preprocess.py"/>-->
+<node name="sonar_preprocess" pkg="loc_sonar" type="sonar_preprocess.py" output="screen"/>
 
 	<!--sonar hardware interface-->
 <!--This node must be run if you are using a real sonar-->

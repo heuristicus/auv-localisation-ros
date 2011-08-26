@@ -15,7 +15,11 @@ def pre_real(data):
 
 def pre_sim(data):
     print 'processing sim data'
-    action.publish(data)
+    # angles at which particles are scanning
+    sca = [step * (x + 1) for x in range(angle_range/step)]
+    print sca
+    #print data    
+    #action.publish(data)
 
 def create_subscribers():
     global real, sim
@@ -26,6 +30,9 @@ def create_subscribers():
 def create_publishers():
     global action
     action = rospy.Publisher('sonar_pre', proc_sonar)
+
+def get_scan_start_end(self, angle_range):
+    print 'a'
 
 def get_params():
     global angle_range, step

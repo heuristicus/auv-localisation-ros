@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import random, s_math, particle
+from math import sqrt
 
 class ParticleList:
     
@@ -88,8 +89,8 @@ class ParticleList:
         m = self.particles[0].map
         self.particles = []
         for i in range(self.max_p):
-            l = self.math.apply_point_noise(loc[0][0], loc[1][0], loc[0][1], loc[1][1], pret=True)
-            a = self.math.get_noise(ang[0], ang[1])
+            l = self.math.apply_point_noise(loc[0][0], loc[1][0], sqrt(loc[0][1]), sqrt(loc[1][1]), pret=True)
+            a = self.math.get_noise(ang[0], sqrt(ang[1]))
             self.particles.append(particle.Particle(l, m, a))
     
                         
