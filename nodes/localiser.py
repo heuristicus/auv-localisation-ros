@@ -69,6 +69,7 @@ class Localiser:
         for particle in self.particles.list():
             particle.move(move_vector, angle)
             particle.get_ranges(self.scale)
+            #print particle.ranges
             self.weight_particle(sonar_ranges, angle, particle)
             if self.use_gui:
                 mline = particle.move_line.coords

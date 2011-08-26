@@ -79,7 +79,6 @@ def draw_line(canvas, line, tag=''):
 
 def draw_point(canvas, point, weight=0, colour='black', tag=''):
     pt = point
-    print weight*10
     if not point: return
     fl = 'red' if tag == 'mean' else None        
     if weight == 0:

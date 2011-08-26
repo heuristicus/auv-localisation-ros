@@ -17,9 +17,8 @@ def pre_sim(data):
     print 'processing sim data'
     # angles at which particles are scanning
     sca = [step * (x + 1) for x in range(angle_range/step)]
-    print sca
-    #print data    
-    #action.publish(data)
+    data.ranges = [data.ranges[a] for a in sca]
+    action.publish(data)
 
 def create_subscribers():
     global real, sim
