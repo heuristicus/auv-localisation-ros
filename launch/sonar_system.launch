@@ -9,9 +9,9 @@
 
 <!--	<param name="use_sim" value="1" />-->
 	<!--The actions that the simulator should take in the map-->
-	<param name="move_list" value="$(find loc_sonar)/nodes/jagged.mv"/>
+	<param name="move_list" value="$(find loc_sonar)/nodes/simple.mv"/>
 	<!--Map to use for simulator and localisation-->
-	<param name="loc_map" value="$(find loc_sonar)/nodes/jagged.map"/>
+	<param name="loc_map" value="$(find loc_sonar)/nodes/simple.map"/>
 
 	<!--Amount of noise to apply to the angle of the vehicle in degrees-->
 	<param name="angle_noise" value="5" />

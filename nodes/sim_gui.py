@@ -47,8 +47,8 @@ class gui:
     def sonar(self, data):
         #self.canvas.delete('sonar')
         draw_point(self.canvas, data.actual, tag='sonar', colour='red')
-        for ln in data.scan:
-            draw_line(self.canvas, ln, tag='scan')
+        #for ln in data.scan:
+            #draw_line(self.canvas, ln, tag='scan')
         draw_line(self.canvas, data.head_line, colour='red', tag='head')
 
     def particle(self, data):

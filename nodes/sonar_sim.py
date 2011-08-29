@@ -46,8 +46,9 @@ class Sonar:
         self.heading = angle
         hms = self.heading - (self.angle_range/2)
         self.scan_start_angle = hms if hms > 0 else 360 - abs(hms)
-        print self.heading
-        self.head_line = self.math.convert_line(self.math.get_scan_line(self.loc, self.heading, 40))
+        #print self.heading
+        print 'head'
+        self.head_line = self.math.convert_line(self.math.get_scan_line(self.math.make_point(self.loc.x, self.loc.y), self.heading + 90, 40))
 
     def reset(self):
         self.ranges = []
