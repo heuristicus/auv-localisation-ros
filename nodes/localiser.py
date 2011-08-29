@@ -43,11 +43,11 @@ class Localiser:
         between its ranges and the ranges detected by the sonar."""
         prang = [r/100 for r in particle.ranges] # normalise the measurement to metres to be the same as the sonar data
         for sr, pr in zip(sonar_ranges, prang):
-            print sr, pr
-            particle.wt += 0.0001 if sr == pr else self.math.gaussian(sr, 5, pr)
-        print sonar_angle
-        #print particle.wt
-
+            if bool(sr == -1) ^ bool(pr == -1):
+                particle.wt += 0.0001
+            else:
+                particle.wt += 0.0001 if sr == pr else self.math.gaussian(sr, 5, pr)
+                
     def update(self, data):
         # maybe there should be separate methods which update based on
         # action and sonar range data. This means that the localiser

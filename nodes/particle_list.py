@@ -93,6 +93,8 @@ class ParticleList:
             a = self.math.get_noise(ang[0], sqrt(ang[1]))
             self.particles.append(particle.Particle(l, m, a))
     
+    def random_sample(self):
+        print ''
                         
     def wt_less(self, val):
         """Returns the list index of the range that the given value

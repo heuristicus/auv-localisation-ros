@@ -4,9 +4,7 @@ rparam=sonar/rng
 utp=/param_update
 umsg="update"
 
-for r in 5 ; do
-    
-    echo $r
+for r in 5 10 20 50; do
     
     for val in $(ls $1 | grep $r.bag | awk 'BEGIN{FS=" "}{print $1}'); do
 

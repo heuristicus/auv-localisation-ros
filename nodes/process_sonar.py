@@ -38,7 +38,7 @@ def get_distance(bins):
     """
     blank_index = int(round(blanking_dist/bin_rng))
     #print 'Ignore up to index %d'%(blank_index)
-    wrk = [x if x > threshold else 0 for x in bins[blank_index:]]
+    wrk = [x if x > threshold else -1 for x in bins[blank_index:]]
     avg = sum(wrk)/len(wrk)
     dist = get_first(wrk) * bin_rng
     print dist

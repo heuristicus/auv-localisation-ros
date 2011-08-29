@@ -14,13 +14,15 @@ def pre_real(data):
     ## The data coming in here will be raw data containing bins and so on, which will need to be processed accordingly.
 
 def pre_sim(data):
-    print 'processing sim data'
     # angles at which particles are scanning
-    sca = [step * (x + 1) for x in range(angle_range/step)]
-    data.ranges = [data.ranges[a] if data.ranges[a] != 0 else -1 for a in range(len(data.ranges))]
-    print data.ranges
+    sd = get_scan_data(0)
+    rng = []
+    for i in range(sd[1]):
+        ang = (sd[0] + (i * step))%360 # angle of the scan we want
+        print ang
+        rng.append(data.ranges[ang] if data.ranges[ang] != 0 else -1)
+    print rng
     data.angle = 90 # the angle on the simulator at 0 is facing east, in the experiments the sonar was facing zero degrees in its frame, which is 90 in the particles' reference frame
-    data.ranges = [data.ranges[a] for a in sca]
     action.publish(data)
 
 def create_subscribers():
@@ -33,8 +35,11 @@ def create_publishers():
     global action
     action = rospy.Publisher('sonar_pre', proc_sonar)
 
-def get_scan_start_end(self, angle_range):
-    print 'a'
+def get_scan_data(heading):
+    hma = heading - (angle_range/2)
+    s_start = hma if hma > 0 else 360 - abs(hma)
+    num_scans = angle_range/step
+    return (s_start, num_scans)
 
 def get_params():
     global angle_range, step
