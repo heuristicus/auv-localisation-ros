@@ -74,7 +74,7 @@ class Localiser:
             if self.use_gui:
                 mline = particle.move_line.coords
                 mv = line(point(mline[0][0], mline[0][1]), point(mline[1][0], mline[1][1]))
-                self.guipub.publish(weight=particle.wt, loc=point(particle.loc.x, particle.loc.y), angle=particle.initial_angle, ranges=particle.ranges, moveline=mv, scan=particle.scan)
+                self.guipub.publish(weight=particle.wt, loc=point(particle.loc.x, particle.loc.y), angle=particle.heading, ranges=particle.ranges, moveline=mv, scan=particle.scan)
         #print self.particles.mean
         self.guipub.publish(weight=0.2, loc=point(self.particles.mean[0], self.particles.mean[1]), flag=1)
         

@@ -21,6 +21,7 @@ class MoveList:
         tmp = []
         ml = []
         tmp = open(filename, 'r').read().split(' ')
+        print tmp
         tmp = map(float,tmp[:-1])
         for i in range(len(tmp)/3):
             ml.append([Point(tmp[i*3], tmp[i*3+1]), tmp[i*3+2]])

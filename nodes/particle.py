@@ -13,8 +13,7 @@ class Particle:
         self.scan = []
         self.int = []
         self.map = map_
-        self.initial_angle = angle
-        self.current_angle = self.initial_angle
+        self.set_heading(angle)
         self.scan_number = self.angle_range/self.step
         self.math = s_math.SonarMath()
         self.move_line = None
@@ -29,22 +28,32 @@ class Particle:
         self.loc_noise = rospy.get_param('location_noise')
         self.rng_noise = rospy.get_param('range_noise')
 
+    def set_heading(self, angle):
+        """Sets the heading to the angle given, and then changes the
+        starting angle of the sonar scan to reflect this change. The
+        current setup makes half of the sweep on the left side of the
+        heading angle, and the other half on the right of the heading
+        angle."""
+        self.heading = angle
+        hms = self.heading - (self.angle_range/2)
+        self.scan_start_angle = hms if hms > 0 else 360 - abs(hms)
+
     def get_ranges(self, scale):
         self.scan = []        
         self.int = []
-        self.current_angle = self.initial_angle
         self.ranges = []
+        current_angle = self.scan_start_angle
         #a = []
         for i in range(self.scan_number):
             #a.append(self.current_angle)
-            ln = self.math.get_scan_line(self.loc, self.current_angle, self.max_range)
+            ln = self.math.get_scan_line(self.loc, current_angle, self.max_range)
             intersect = self.math.get_intersect_point(self.loc, ln, self.map)
             dist = self.math.intersect_distance(self.loc, intersect, self.min_range, self.max_range)
             dist = dist/scale # normalise the distance
             self.scan.append(self.math.convert_line(ln))
             self.int.append(intersect)
             self.ranges.append(dist)
-            self.current_angle += self.step
+            current_angle += self.step
         #print self.ranges
         #print map(int,a)
         #self.math.apply_range_noise(self.ranges, self.rng_noise)
@@ -74,8 +83,9 @@ class Particle:
         #print self.initial_angle, 'b', angle
         #self.initial_angle = angle + angle_noise
         #self.initial_angle = 315 - angle + angle_noise
-        self.initial_angle = angle
+        #self.initial_angle = angle
         #print self.initial_angle, 'a', angle
+        self.set_heading(angle + angle_noise)
         
         #self.initial_angle = 0
         ###### MAY CAUSE ERRORS #######

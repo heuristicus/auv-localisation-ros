@@ -19,13 +19,9 @@ class Sonar:
         start_point = self.move_list.first()
         self.start_loc = start_point[0] # Starting location of the sonar in the map
         self.loc = self.start_loc # Current location of the sonar in the map
-        # Where the first pulse is directed from. Sonar initialised so
-        # that the first pulse travels from -125, where up is 0.
-        self.initial_angle = start_point[1]
-        self.current_angle = self.initial_angle
-        self.file = out_file
         self.math = s_math.SonarMath()
-
+        self.set_heading(start_point[1])
+        self.file = out_file
         self.make_pub()
         self.run_sim()
 
@@ -41,12 +37,23 @@ class Sonar:
         self.move_file = rospy.get_param('move_list')
         self.map_file = rospy.get_param('loc_map')
 
+    def set_heading(self, angle):
+        """Sets the heading to the angle given, and then changes the
+        starting angle of the sonar scan to reflect this change. The
+        current setup makes half of the sweep on the left side of the
+        heading angle, and the other half on the right of the heading
+        angle."""
+        self.heading = angle
+        hms = self.heading - (self.angle_range/2)
+        self.scan_start_angle = hms if hms > 0 else 360 - abs(hms)
+        print self.heading
+        self.head_line = self.math.convert_line(self.math.get_scan_line(self.loc, self.heading, 40))
+
     def reset(self):
         self.ranges = []
         self.scan_lines = []
         self.intersection_points = []
-        self.current_angle = self.initial_angle
-
+        
     def make_pub(self):
         self.out = rospy.Publisher('sonar_pre', proc_sonar)
         rospy.init_node('sonar_sim')
@@ -88,24 +95,29 @@ class Sonar:
             # subtracting this value from 315 gives an approximate of 0 to north
             #print self.initial_angle, 'SONARb', angle
             #self.initial_angle = 315 - printangle + angle_noise
-            self.initial_angle = angle + angle_noise
+            #self.initial_angle = angle + angle_noise
             #print self.initial_angle, 'SONARa', angle
             #self.initial_angle = 0
+            
             ###### MAY CAUSE ERRORS #######
 
             self.loc = n_end
+            self.set_heading(angle + angle_noise)
+        #else:
+        #    self.set_heading(angle)
         self.get_ranges()
-        self.out.publish(prev=point(prev.x, prev.y), next=point(next.x, next.y), angle=angle, ranges=self.ranges, actual=point(self.loc.x, self.loc.y), scan=self.scan_lines)
+        self.out.publish(prev=point(prev.x, prev.y), next=point(next.x, next.y), angle=angle, ranges=self.ranges, actual=point(self.loc.x, self.loc.y), scan=self.scan_lines, head_line=self.head_line)
         
     def get_ranges(self):
         """Get the ranges that the sonar would receive at its current
         map position if its sensors were perfect."""
         self.reset() # reset arrays containing scan lines, ranges etc. 
         #a = []
+        current_angle = self.scan_start_angle
         for i in range(self.scan_number): # loop over the total number of measurements to take
             #a.append(self.current_angle)
             # get the line from the sonar to the point of max range
-            ln = self.math.get_scan_line(self.loc, self.current_angle, self.max_range)
+            ln = self.math.get_scan_line(self.loc, current_angle, self.max_range)
             # get the intersection point with the scan line on the map
             # that is closest to the current sonar location
             intersect = self.math.get_intersect_point(self.loc, ln, self.map)
@@ -116,7 +128,7 @@ class Sonar:
             # Store the other objects for drawing later if necessary
             self.scan_lines.append(self.math.convert_line(ln))
             self.intersection_points.append(intersect)
-            self.current_angle += self.step # increment the angle to the angle of the next measurement
+            current_angle += self.step # increment the angle to the angle of the next measurement
         #print map(int, a)
 
 if __name__ == '__main__':

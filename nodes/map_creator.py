@@ -40,9 +40,13 @@ def create_move_list():
     mv_flag = 1 if mv_flag == 0 else 0
     
 def save_map_to_file():
+    ### You will need to manually add a scaling factor to the first line of the map, with no trailing spaces. The second line of the map should contain all of the lines that make up the map
     f = tkFileDialog.asksaveasfile(defaultextension='.map')
-    for val in point_list:
-        f.write(str(val) + ' ')
+    for i, val in enumerate(point_list):
+        if i != len(point_list) - 1:
+            f.write(str(val) + ' ')
+        else:
+            f.write(str(val))
     f.close()
 
 def save_move_to_file():
