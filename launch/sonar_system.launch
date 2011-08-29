@@ -9,7 +9,7 @@
 
 <!--	<param name="use_sim" value="1" />-->
 	<!--The actions that the simulator should take in the map-->
-	<param name="move_list" value="$(find loc_sonar)/nodes/i.mv"/>
+	<!--<param name="move_list" value="$(find loc_sonar)/nodes/i.mv"/>-->
 	<!--Map to use for simulator and localisation-->
 	<param name="loc_map" value="$(find loc_sonar)/nodes/gisbert.map"/>
 
@@ -50,7 +50,7 @@
 
 	<!--sonar processing-->
 	<!--This node must be run if you are using a real sonar, or the experiment simulator-->
-<node name="sonar_preprocess" pkg="loc_sonar" type="sonar_preprocess.py" output="screen"/>
+<!--<node name="sonar_preprocess" pkg="loc_sonar" type="sonar_preprocess.py" output="screen"/>-->
 
 	<!--sonar hardware interface-->
 <!--This node must be run if you are using a real sonar-->

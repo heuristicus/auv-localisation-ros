@@ -11,7 +11,6 @@ class Sonar:
         self.scan_lines = []
         self.intersection_points = []
         #self.move_list = move_list # tuples containing a point location and angle of the sonar.
-        self.angle_range = 270 # Total angle that the sonar sweeps through
         self.scan_number = self.angle_range/self.step
         self.map = map_rep.MapRep(fname=self.map_file) # Map to use the sonar in
         self.scale = self.map.scale

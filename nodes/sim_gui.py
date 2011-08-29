@@ -38,12 +38,15 @@ class gui:
             self.canvas.delete('particle')
 
     def get_params(self):
-        self.move_file = rospy.get_param('move_list')
+        try:
+            self.move_file = rospy.get_param('move_list')
+            self.move_list = move_list.MoveList(fname=self.move_file)
+        except KeyError:
+            self.move_list = None
         self.map_file = rospy.get_param('loc_map')
         self.map = map_rep.MapRep(fname=self.map_file) # Map to use the sonar in
         self.scale = self.map.scale
-        self.move_list = move_list.MoveList(fname=self.move_file)
-
+        
     def sonar(self, data):
         #self.canvas.delete('sonar')
         draw_point(self.canvas, data.actual, tag='sonar', colour='red')
@@ -67,8 +70,9 @@ class gui:
             draw_linestr(self.canvas, line, tag='map')
 
     def draw_move_points(self):
-        for point in self.move_list.get_list():
-            draw_point(self.canvas, point[0], tag='mvpt')
+        if self.move_list:
+            for point in self.move_list.get_list():
+                draw_point(self.canvas, point[0], tag='mvpt')
         
 def draw_linestr(canvas, line, tag=''):
     c = line.coords

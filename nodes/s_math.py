@@ -44,7 +44,7 @@ class SonarMath:
         return line(point(c[0][0], c[0][1]), point(c[1][0], c[1][1]))
        
     def point_at_angle(self, centre, degrees, radius):
-        """Get the point at a given angle on a circle"""
+        """Get the point at a given angle on a circle. The zero degree heading is facing east."""
         # (x', y') = (x + r cos a, y + r sin a)
         # x,y = centre point, r = radius, a = angle
         return Point(centre.x + (radius * cos(radians(degrees))), centre.y + (radius * sin(radians(degrees))))
@@ -136,10 +136,10 @@ class SonarMath:
 
 if __name__ == '__main__':
     a = SonarMath()
-    #for i in range(100):
-    #    print a.get_noise(0,5)
+    for i in range(100):
+        print a.point_at_angle(Point(0,0), 0, 40)
     #a.rotate_vector(Point(20,8), (40,80), -30)
     #print a.get_move_vector(Point(10,10), Point(5,5))
-    print a.gaussian(356.34777832,5,356.138794019)
+    #print a.gaussian(356.34777832,5,356.138794019)
     #print a.normpdf(356.34777832,5,356.138794019)
     #print a.calc_mean_variance([5,6,7,1,2,3], [0.1,0.4,0.7,0.9,0.3,0.6])

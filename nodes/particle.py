@@ -74,7 +74,7 @@ class Particle:
         #print self.initial_angle, 'b', angle
         #self.initial_angle = angle + angle_noise
         #self.initial_angle = 315 - angle + angle_noise
-        self.initial_angle = angle
+        self.initial_angle = angle + angle_noise
         #print self.initial_angle, 'a', angle
         
         #self.initial_angle = 0
