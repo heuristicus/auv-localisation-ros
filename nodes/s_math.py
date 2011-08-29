@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import roslib; roslib.load_manifest('loc_sonar')
 from loc_sonar.msg import line, point
-from math import sin, radians, cos, e, pi, sqrt
+from math import sin, radians, cos, e, pi, sqrt, degrees, acos, atan2
 from shapely import *
 from shapely.geometry import LineString, Point
 import sys, random
@@ -48,6 +48,21 @@ class SonarMath:
         # (x', y') = (x + r cos a, y + r sin a)
         # x,y = centre point, r = radius, a = angle
         return Point(centre.x + (radius * cos(radians(degrees))), centre.y + (radius * sin(radians(degrees))))
+
+    def angle_at_pt(self, point, centre):
+        """Calculates the angle of a point on a circle"""
+        radius = self.pt_dist(point, centre)
+        p0 = self.make_point(centre.x + radius, centre.y) # point at zero degrees (facing east)
+        ptd = self.pt_dist(point, p0)
+        gam = acos(((2*pow(radius, 2)) - pow(ptd, 2))/(2*pow(radius, 2))) # law of cosines
+        return degrees(gam)
+
+    def angle_at_pt2(self, point, centre):
+        """Calculates the angle of a point on a circle"""
+        radius = self.pt_dist(point, centre)
+        p0 = self.make_point(centre.x, centre.y - radius)
+        a = 2 * atan2(point.x - p0.x, point.y - p0.y)
+        return a
 
     def apply_range_noise(self, lst, sigma):
         """Apply gaussian noise to all values in a list of ranges"""
@@ -105,8 +120,14 @@ class SonarMath:
     def make_lines(self, pt_list):
         return map(self.make_line, pt_list[:-1], pt_list[1:])
 
+    def make_point(self, x, y):
+        return Point(x, y)
+
     def pt_dist(self, p1, p2):
-        return sqrt(pow(p2[0] - p1[0], 2) + pow(p2[1] - p1[1], 2))
+        try:
+            return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2))
+        except AttributeError:
+            return sqrt(pow(p2[0] - p1[0], 2) + pow(p2[1] - p1[1], 2))
 
     def calc_loc_mean_variance(self, point_list, weight_list):
         x = [point.x for point in point_list]

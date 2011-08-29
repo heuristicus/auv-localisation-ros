@@ -47,7 +47,7 @@ class ParticleList:
         return [p.loc.coords[0] for p in self.particles]
 
     def angles(self):
-        return [p.initial_angle for p in self.particles]
+        return [p.heading for p in self.particles]
 
     def resample(self):
         """Resample the particles in the list probabilistically -
@@ -82,9 +82,9 @@ class ParticleList:
         #if not self.particles or sum(self.weights()) is 0:
         #    return # Make sure this is only performed if you have the data required
         loc = self.math.calc_loc_mean_variance([x.loc for x in self.particles], self.weights())
-        angs = [x.initial_angle for x in self.particles]
+        angs = [x.heading for x in self.particles]
         awts = [x.ang_wt for x in self.particles]
-        ang = self.math.calc_mean_variance([x.initial_angle for x in self.particles], awts)
+        ang = self.math.calc_mean_variance(angs, awts)
         self.mean = (loc[0][0], loc[1][0])
         m = self.particles[0].map
         self.particles = []

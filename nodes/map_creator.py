@@ -1,6 +1,6 @@
 #!usr/bin/python
 import os
-import sys
+import sys, s_math
 from Tkinter import *
 import tkFileDialog
 import tkMessageBox
@@ -12,6 +12,8 @@ def init():
     global mv_flag
     global mv_points
     global rotations
+    global m
+    m = s_math.SonarMath()
     point_list = []
     mv_points = []
     rotations = []
@@ -40,9 +42,13 @@ def create_move_list():
     mv_flag = 1 if mv_flag == 0 else 0
     
 def save_map_to_file():
+    ### You will need to manually add a scaling factor to the first line of the map, with no trailing spaces. The second line of the map should contain all of the lines that make up the map
     f = tkFileDialog.asksaveasfile(defaultextension='.map')
-    for val in point_list:
-        f.write(str(val) + ' ')
+    for i, val in enumerate(point_list):
+        if i != len(point_list) - 1:
+            f.write(str(val) + ' ')
+        else:
+            f.write(str(val))
     f.close()
 
 def save_move_to_file():
@@ -53,7 +59,7 @@ def save_move_to_file():
     for val in range(len(mv_points)/2):
         pt = mv_points[val*2:val*2 + 2]
         rot = rotations[val*2:val*2 + 2]
-        a = angle_at_pt(rot, pt)
+        a = m.angle_at_pt(rot, pt)
         f.write('%s %s %s '%(str(pt[0]), str(pt[1]), str(a)))
     f.close()
 
@@ -79,12 +85,5 @@ def draw_move_point():
     canvas.create_oval(pts[0] - 3, pts[1] + 3, pts[0] + 3, pts[1] - 3)
     canvas.create_line(*pts)
 
-def angle_at_pt(point, centre):
-        """Calculates the angle of a point on a circle"""
-        radius = sqrt(pow(point[0] - centre[0], 2) + pow(point[1] - centre[1], 2))
-        p0 = (centre[0], centre[1] + radius)
-        a = degrees(abs(2 * atan2(point[1] - p0[1], point[0] - p0[0])))
-        return a
-           
 if __name__ == '__main__':
     init()

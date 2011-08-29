@@ -11,7 +11,7 @@
 	<!--The actions that the simulator should take in the map-->
 	<!--<param name="move_list" value="$(find loc_sonar)/nodes/i.mv"/>-->
 	<!--Map to use for simulator and localisation-->
-	<param name="loc_map" value="$(find loc_sonar)/nodes/gisbert.map"/>
+	<param name="loc_map" value="$(find loc_sonar)/nodes/simple.map"/>
 
 	<!--Amount of noise to apply to the angle of the vehicle in degrees-->
 	<param name="angle_noise" value="5" />
@@ -22,7 +22,7 @@
 	<!--Angle in degrees between each successive ping-->
 	<param name="sonar_step" value="15" />
 	<!--Maximum range of the sonar in centimetres-->
-	<param name="sonar_maxrange" value="1000" />
+	<param name="sonar_maxrange" value="100" />
 	<!-- range of the sonar-->
 	<param name="sonar_minrange" value="0.1" />
 	<!--Sweep angle of the sonar in degrees-->
@@ -38,8 +38,8 @@
 	<node name="sim_gui" pkg="loc_sonar" type="sim_gui.py" output="screen"/>
 	
 	<!-- simulation -->
-	<!--<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' output="screen"/>-->
-<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py'/>
+	<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' output="screen"/>
+<!--<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py'/>-->
 
 	<!--  localisation -->
 	<node name='localiser' pkg='loc_sonar' type='localiser.py' output="screen"/>

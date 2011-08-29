@@ -51,7 +51,8 @@ class gui:
         #self.canvas.delete('sonar')
         draw_point(self.canvas, data.actual, tag='sonar', colour='red')
         #for ln in data.scan:
-         #   draw_line(self.canvas, ln, tag='scan')
+            #draw_line(self.canvas, ln, tag='scan')
+        draw_line(self.canvas, data.head_line, colour='red', tag='head')
 
     def particle(self, data):
         #self.canvas.delete('particle')
@@ -74,12 +75,12 @@ class gui:
             for point in self.move_list.get_list():
                 draw_point(self.canvas, point[0], tag='mvpt')
         
-def draw_linestr(canvas, line, tag=''):
+def draw_linestr(canvas, line, colour='black', tag=''):
     c = line.coords
-    canvas.create_line(c[0][0], c[0][1], c[1][0], c[1][1], tags=tag)
+    canvas.create_line(c[0][0], c[0][1], c[1][0], c[1][1], fill=colour, tags=tag)
 
-def draw_line(canvas, line, tag=''):
-    canvas.create_line(line.start.x, line.start.y, line.end.x, line.end.y, tags=tag)
+def draw_line(canvas, line, colour='black', tag=''):
+    canvas.create_line(line.start.x, line.start.y, line.end.x, line.end.y, fill=colour, tags=tag)
 
 def draw_point(canvas, point, weight=0, colour='black', tag=''):
     pt = point
