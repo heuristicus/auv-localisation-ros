@@ -1,6 +1,6 @@
 #!usr/bin/python
 import os
-import sys
+import sys, s_math
 from Tkinter import *
 import tkFileDialog
 import tkMessageBox
@@ -12,6 +12,8 @@ def init():
     global mv_flag
     global mv_points
     global rotations
+    global m
+    m = s_math.SonarMath()
     point_list = []
     mv_points = []
     rotations = []
@@ -57,7 +59,7 @@ def save_move_to_file():
     for val in range(len(mv_points)/2):
         pt = mv_points[val*2:val*2 + 2]
         rot = rotations[val*2:val*2 + 2]
-        a = angle_at_pt(rot, pt)
+        a = m.angle_at_pt(rot, pt)
         f.write('%s %s %s '%(str(pt[0]), str(pt[1]), str(a)))
     f.close()
 
@@ -83,12 +85,5 @@ def draw_move_point():
     canvas.create_oval(pts[0] - 3, pts[1] + 3, pts[0] + 3, pts[1] - 3)
     canvas.create_line(*pts)
 
-def angle_at_pt(point, centre):
-        """Calculates the angle of a point on a circle"""
-        radius = sqrt(pow(point[0] - centre[0], 2) + pow(point[1] - centre[1], 2))
-        p0 = (centre[0], centre[1] + radius)
-        a = degrees(abs(2 * atan2(point[1] - p0[1], point[0] - p0[0])))
-        return a
-           
 if __name__ == '__main__':
     init()

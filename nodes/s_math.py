@@ -55,7 +55,14 @@ class SonarMath:
         p0 = self.make_point(centre.x + radius, centre.y) # point at zero degrees (facing east)
         ptd = self.pt_dist(point, p0)
         gam = acos(((2*pow(radius, 2)) - pow(ptd, 2))/(2*pow(radius, 2))) # law of cosines
-        return gam
+        return degrees(gam)
+
+    def angle_at_pt2(self, point, centre):
+        """Calculates the angle of a point on a circle"""
+        radius = self.pt_dist(point, centre)
+        p0 = self.make_point(centre.x, centre.y - radius)
+        a = 2 * atan2(point.x - p0.x, point.y - p0.y)
+        return a
 
     def apply_range_noise(self, lst, sigma):
         """Apply gaussian noise to all values in a list of ranges"""
