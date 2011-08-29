@@ -59,7 +59,7 @@ def save_move_to_file():
     for val in range(len(mv_points)/2):
         pt = mv_points[val*2:val*2 + 2]
         rot = rotations[val*2:val*2 + 2]
-        a = m.angle_at_pt(rot, pt)
+        a = m.angle_at_pt2(rot, pt)
         f.write('%s %s %s '%(str(pt[0]), str(pt[1]), str(a)))
     f.close()
 

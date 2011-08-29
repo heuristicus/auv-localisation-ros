@@ -41,8 +41,11 @@ class Localiser:
     def weight_particle(self, sonar_ranges, sonar_angle, particle):
         """Weights the given particle according to the difference
         between its ranges and the ranges detected by the sonar."""
-        for sr, pr in zip(sonar_ranges, particle.ranges):
+        prang = [r/100 for r in particle.ranges] # normalise the measurement to metres to be the same as the sonar data
+        for sr, pr in zip(sonar_ranges, prang):
+            print sr, pr
             particle.wt += 0.0001 if sr == pr else self.math.gaussian(sr, 5, pr)
+        print sonar_angle
         #print particle.wt
 
     def update(self, data):

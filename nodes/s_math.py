@@ -62,7 +62,7 @@ class SonarMath:
         radius = self.pt_dist(point, centre)
         p0 = self.make_point(centre.x, centre.y - radius)
         a = 2 * atan2(point.x - p0.x, point.y - p0.y)
-        return a
+        return degrees(a) - 90
 
     def apply_range_noise(self, lst, sigma):
         """Apply gaussian noise to all values in a list of ranges"""

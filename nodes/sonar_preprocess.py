@@ -17,6 +17,9 @@ def pre_sim(data):
     print 'processing sim data'
     # angles at which particles are scanning
     sca = [step * (x + 1) for x in range(angle_range/step)]
+    data.ranges = [data.ranges[a] if data.ranges[a] != 0 else -1 for a in range(len(data.ranges))]
+    print data.ranges
+    data.angle = 90 # the angle on the simulator at 0 is facing east, in the experiments the sonar was facing zero degrees in its frame, which is 90 in the particles' reference frame
     data.ranges = [data.ranges[a] for a in sca]
     action.publish(data)
 

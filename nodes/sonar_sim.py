@@ -106,6 +106,7 @@ class Sonar:
         #else:
         #    self.set_heading(angle)
         self.get_ranges()
+        self.ranges = [r/100 for r in self.ranges]
         self.out.publish(prev=point(prev.x, prev.y), next=point(next.x, next.y), angle=angle, ranges=self.ranges, actual=point(self.loc.x, self.loc.y), scan=self.scan_lines, head_line=self.head_line)
         
     def get_ranges(self):
