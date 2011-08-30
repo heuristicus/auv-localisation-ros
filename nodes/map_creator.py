@@ -24,16 +24,31 @@ def create_canvas():
     ms = Tk()
     global canvas
 
+    canvas = Canvas(ms, width=800, height=800)
+    canvas.pack()
+    canvas.bind("<Button-1>", m1down)
     sv = Button(ms, text='Save map', command=save_map_to_file)
     sv.pack()
     sm = Button(ms, text='Save move', command=save_move_to_file)
     sm.pack()
     mv = Button(ms, text='Movement list', command=create_move_list)
     mv.pack()
-    canvas = Canvas(ms, width=800, height=800)
-    canvas.pack()
-    canvas.bind("<Button-1>", m1down)
+    ld = Button(ms, text='Load map', command=load_map)
+    ld.pack()
+    
     canvas.mainloop()
+
+def load_map():
+    f = tkFileDialog.askopenfile()
+    s = f.read()
+    lines = s.split('\n')
+    pts = map(int,lines[1].split(' '))
+    for i in range(len(pts)):
+        if i%4 == 0:
+            try:
+                canvas.create_line(*pts[i-4:i])
+            except IndexError:
+                pass
 
 def create_move_list():
     global mv_flag
