@@ -28,6 +28,7 @@ class gui:
 
     def create_subscribers(self):
         self.particlesub = rospy.Subscriber('particle', particle_data, self.particle)
+        self.bestsub = rospy.Subscriber('best_particle', particle_data, self.particle)
         self.sonarsub = rospy.Subscriber('sonar_pre', proc_sonar, self.sonar)
         self.updatesub = rospy.Subscriber('particle_update', String, self.delete)
         rospy.init_node('sim_gui')
@@ -58,8 +59,10 @@ class gui:
         #self.canvas.delete('particle')
         if data.flag == 1:
             draw_point(self.canvas, data.loc, weight=data.weight, colour='red', tag='mean')
+        elif data.flag == 2:
+            draw_point(self.canvas, data.loc, weight=data.weight, colour='black', tag='best')
         else:
-            draw_point(self.canvas, data.loc, weight=data.weight, colour='black', tag='particle')
+            draw_point(self.canvas, data.loc, weight=data.weight, colour='grey', tag='particle')
         #for ln in data.scan:
          #   draw_line(self.canvas, ln, tag='scan')
         draw_line(self.canvas, data.moveline, tag='mvln')

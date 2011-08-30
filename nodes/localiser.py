@@ -25,6 +25,7 @@ class Localiser:
         if self.use_gui:
             self.guipub = rospy.Publisher('particle', particle_data)
             self.updatepub = rospy.Publisher('particle_update', String)
+            self.bestpub = rospy.Publisher('best_particle', particle_data)
 
     def generate_particles(self, loc, angle):
         """Create a number of particles."""
@@ -82,6 +83,11 @@ class Localiser:
                 self.guipub.publish(weight=particle.wt, loc=point(particle.loc.x, particle.loc.y), angle=particle.heading, ranges=particle.ranges, moveline=mv, scan=particle.scan)
         #print self.particles.mean
         self.guipub.publish(weight=0.2, loc=point(self.particles.mean[0], self.particles.mean[1]), flag=1)
+        best = self.particles.best()
+
+        mline = best.move_line.coords
+        mv = line(point(mline[0][0], mline[0][1]), point(mline[1][0], mline[1][1]))
+        self.bestpub.publish(weight=best.wt, loc=point(best.loc.x, best.loc.y), angle=best.heading, ranges=best.ranges, moveline=mv, scan=best.scan, flag=2)
         
     def get_localisation_error(self):
         lsa = self.particles.best().loc
