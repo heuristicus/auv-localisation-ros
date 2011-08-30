@@ -68,6 +68,7 @@ class ExpSonar:
                 print 'file %s does not exist'%(fname)
 
             rospy.sleep(self.sleeptime) # artificial time an action takes
+        self.run.config(state='disabled')
         
     def make_pub(self):
         self.pub = rospy.Publisher('sonar_sim_readable', proc_sonar)
