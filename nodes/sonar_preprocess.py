@@ -16,13 +16,17 @@ def pre_real(data):
 def pre_sim(data):
     # angles at which particles are scanning
     sd = get_scan_data(0)
+    #print data.ranges
     rng = []
+    #a = []
     for i in range(sd[1]):
         ang = (sd[0] + (i * step))%360 # angle of the scan we want
-        print ang
+        #a.append(ang)
         rng.append(data.ranges[ang] if data.ranges[ang] != 0 else -1)
-    print rng
-    data.angle = 90 # the angle on the simulator at 0 is facing east, in the experiments the sonar was facing zero degrees in its frame, which is 90 in the particles' reference frame
+    #print rng
+    #print a, 'pre'
+    data.ranges = rng
+    data.angle = 0 # the angle on the simulator at 0 is facing east, in the experiments the sonar was facing zero degrees in its frame, which is 90 in the particles' reference frame
     action.publish(data)
 
 def create_subscribers():

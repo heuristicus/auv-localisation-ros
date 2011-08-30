@@ -77,6 +77,7 @@ class ParticleList:
         # Create copies of the particles in the array locations from
         # the above calculation
         self.particles = [self.particles[i].copy() for i in n]
+        self.random_sample(*mvr)
 
     def resample_meanvar(self):
         #if not self.particles or sum(self.weights()) is 0:
@@ -93,9 +94,25 @@ class ParticleList:
             a = self.math.get_noise(ang[0], sqrt(ang[1]))
             self.particles.append(particle.Particle(l, m, a))
     
-    def random_sample(self):
-        print ''
-                        
+    def random_sample(self, means, varis, angmv):
+        """means is the mean of the x and y, varis is the variance of
+        the same, angmv is the mean and variance of the angle.  This
+        method should put a number of random particles somewhere in
+        the general area of the actual location of the sonar.
+        """
+        random_prc = 10
+        num = self.math.num_from_prc(len(self.particles), random_prc)
+        num = int(num + 1) # At least one particle is randomly sampled. Might not be good
+        m = self.particles[0].map
+        vr = map(lambda x:sqrt(x)*4, varis)
+        for i in range(num):
+            r = int(math.random() * len(self.particles))
+            x = means[0] - (vr[0]/2) + vr[0] * math.random()
+            y = means[1] - (vr[1]/2) + vr[1] * math.random()
+            ang = self.math.get_noise(angmv[0], sqrt(angmv[1]))
+            n_pt = Particle(self.math.make_point(x, y), m, ang)
+            
+        
     def wt_less(self, val):
         """Returns the list index of the range that the given value
         falls into."""

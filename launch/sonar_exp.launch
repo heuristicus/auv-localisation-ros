@@ -36,7 +36,7 @@
 	<node name="sim_gui" pkg="loc_sonar" type="sim_gui.py" output="screen"/>
 	
 	<!-- simulation -->
-	<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py'/>
+	<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py' output="screen"/>
 
 	<!--  localisation -->
 	<node name='localiser' pkg='loc_sonar' type='localiser.py' output="screen"/>

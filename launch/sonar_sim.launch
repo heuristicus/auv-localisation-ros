@@ -39,21 +39,8 @@
 	
 	<!-- simulation -->
 	<node name='sonar_sim' pkg='loc_sonar' type='sonar_sim.py' output="screen"/>
-<!--<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py'/>-->
 
 	<!--  localisation -->
 	<node name='localiser' pkg='loc_sonar' type='localiser.py' output="screen"/>
 	
-	<!--sonar extraction-->	
-	<!--extracts bin data and so on from raw sonar messages-->
-<!--	<node name="sonar_raw_extract" pkg="loc_sonar" type="sonar_raw_extract.py" />-->
-
-	<!--sonar processing-->
-	<!--This node must be run if you are using a real sonar, or the experiment simulator-->
-<!--<node name="sonar_preprocess" pkg="loc_sonar" type="sonar_preprocess.py" output="screen"/>-->
-
-	<!--sonar hardware interface-->
-<!--This node must be run if you are using a real sonar-->
-<!--	<node name='sonar_hw' pkg='loc_sonar' type='sonar_hw.py' />-->
-
 </launch>

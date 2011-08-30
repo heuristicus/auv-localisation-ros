@@ -60,9 +60,13 @@ class SonarMath:
     def angle_at_pt2(self, point, centre):
         """Calculates the angle of a point on a circle"""
         radius = self.pt_dist(point, centre)
-        p0 = self.make_point(centre.x, centre.y - radius)
+        point = self.make_point(point[0], point[1])
+        p0 = self.make_point(centre[0], centre[1] - radius)
         a = 2 * atan2(point.x - p0.x, point.y - p0.y)
         return degrees(a) - 90
+
+    def num_from_prc(self, total, prc):
+        return (prc/100)*total
 
     def apply_range_noise(self, lst, sigma):
         """Apply gaussian noise to all values in a list of ranges"""

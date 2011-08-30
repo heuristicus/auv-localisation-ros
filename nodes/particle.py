@@ -45,7 +45,7 @@ class Particle:
         current_angle = self.scan_start_angle
         #a = []
         for i in range(self.scan_number):
-            #a.append(self.current_angle)
+            #a.append(current_angle)
             ln = self.math.get_scan_line(self.loc, current_angle, self.max_range)
             intersect = self.math.get_intersect_point(self.loc, ln, self.map)
             dist = self.math.intersect_distance(self.loc, intersect, self.min_range, self.max_range)
@@ -54,7 +54,7 @@ class Particle:
             self.int.append(intersect)
             self.ranges.append(dist)
             current_angle += self.step
-        #print self.ranges
+        #print a
         #print map(int,a)
         #self.math.apply_range_noise(self.ranges, self.rng_noise)
 
