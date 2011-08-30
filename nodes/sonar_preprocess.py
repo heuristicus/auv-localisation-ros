@@ -16,13 +16,15 @@ def pre_real(data):
 def pre_sim(data):
     # angles at which particles are scanning
     sd = get_scan_data(0)
+    ranges = map(lambda x:x*100, data.ranges)
+    print ranges
     #print data.ranges
     rng = []
     #a = []
     for i in range(sd[1]):
         ang = (sd[0] + (i * step))%360 # angle of the scan we want
         #a.append(ang)
-        rng.append(data.ranges[ang] if data.ranges[ang] != 0 else -1)
+        rng.append(ranges[ang] if ranges[ang] != 0 else -1)
     #print rng
     #print a, 'pre'
     data.ranges = rng
