@@ -1,0 +1,56 @@
+<launch>
+	
+	<!--PARAMS-->
+
+	<param name="use_gui" value="1"/>
+
+	<!--If you are using the sonar simulator, set this to 1, otherwise to 0.
+	You must remember to uncomment the relevant nodes below - sonar_hw runs the hardware interface, sonar_raw extract extracts data from the raw sonar data. This should also be set to no if you are using the sonar_exp_sim.py node, since the data it produces does not need to be simulated.  NOT NEEDED ANY MORE-->
+
+<!--	<param name="use_sim" value="1" />-->
+	<!--Map to use for simulator and localisation-->
+	<param name="loc_map" value="$(find loc_sonar)/maps/gisbert.map"/>
+
+	<!--Amount of noise to apply to the angle of the vehicle in degrees-->
+	<param name="angle_noise" value="5" />
+	<!--Noise to apply to the position of the vehicle and particles-->
+	<param name="location_noise" value="0.5" />
+	<!--Noise to apply to ranges in the particle filter or simulator-->
+	<param name="range_noise" value="0.5" />
+	<!--Angle in degrees between each successive ping-->
+	<param name="sonar_step" value="15" />
+	<!--Maximum range of the sonar in centimetres-->
+	<param name="sonar_maxrange" value="50" />
+	<!--Minimum range of the sonar in centimetres-->
+	<param name="sonar_minrange" value="1" />
+	<!--Sweep angle of the sonar in degrees-->
+	<param name="sweep_angle" value="270" />
+
+	
+	<!--Number of particles to use in localisation-->
+	<param name="particle_num" value="5"/>
+
+	<!--NODES-->
+
+	<!--gui-->
+	<node name="sim_gui" pkg="loc_sonar" type="sim_gui.py" output="screen"/>
+	
+	<!-- simulation -->
+	<node name='sonar_exp_sim' pkg='loc_sonar' type='sonar_exp_sim.py'/>
+
+	<!--  localisation -->
+	<node name='localiser' pkg='loc_sonar' type='localiser.py' output="screen"/>
+	
+	<!--sonar extraction-->	
+	<!--extracts bin data and so on from raw sonar messages-->
+<!--	<node name="sonar_raw_extract" pkg="loc_sonar" type="sonar_raw_extract.py" />-->
+
+	<!--sonar processing-->
+	<!--This node must be run if you are using a real sonar, or the experiment simulator-->
+	<node name="sonar_preprocess" pkg="loc_sonar" type="sonar_preprocess.py" output="screen"/>
+
+	<!--sonar hardware interface-->
+<!--This node must be run if you are using a real sonar-->
+<!--	<node name='sonar_hw' pkg='loc_sonar' type='sonar_hw.py' />-->
+
+</launch>
