@@ -74,4 +74,5 @@ class ExpSonar:
         rospy.init_node('experiment_gui')
 
 if __name__ == '__main__':
-    ExpSonar('/home/michal/.ros')
+    fl = raw_input("Enter the directory containing experiment files\n")
+    ExpSonar(fl)
