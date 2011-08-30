@@ -53,9 +53,9 @@ class ExpSonar:
         self.c.delete('mvline')
         
     def run(self):
-        data = proc_sonar()
         for i, p in enumerate(self.mv):
             fname = '%s/prc_%d_%d_%d.txt'%(self.fileloc, p[0],p[1], self.rng)
+            data = proc_sonar()
             try:
                 f = open(fname, 'r')
                 # print '%s/prc_%d_%d_%d.txt'%(self.fileloc, p[0],p[1], self.rng)
