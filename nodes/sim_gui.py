@@ -61,11 +61,13 @@ class gui:
             draw_point(self.canvas, data.loc, weight=data.weight, colour='red', tag='mean')
         elif data.flag == 2:
             draw_point(self.canvas, data.loc, weight=data.weight, colour='black', tag='best')
+            draw_line(self.canvas, data.moveline, colour='black', tag='mvln')
         else:
             draw_point(self.canvas, data.loc, weight=data.weight, colour='grey', tag='particle')
+            draw_line(self.canvas, data.moveline, colour='grey', tag='mvln')
         #for ln in data.scan:
          #   draw_line(self.canvas, ln, tag='scan')
-        draw_line(self.canvas, data.moveline, tag='mvln')
+        
         #self.canvas.create_text(data.loc.x, data.loc.y, text='%d'%(data.weight))
 
     def draw_map(self):
