@@ -21,14 +21,15 @@ def pre_sim(data):
     #print data.ranges
     rng = []
     #a = []
+    ### seems like a rotation of -135 or +225 is needed to get this data to match the actual data in the sonar file after it has been through here. This needs to be fixed somehow. This is when ang = (sd[0] + (i * step))%360 and that data is published.
     for i in range(sd[1]):
-        ang = (sd[0] + (i * step))%360 # angle of the scan we want
+        ang = (sd[0] + (i * step) + 225)%360 # angle of the scan we want
         #a.append(ang)
         rng.append(ranges[ang] if ranges[ang] != 0 else -1)
     #print rng
     #print a, 'pre'
     data.ranges = rng
-    data.angle = 0 # the angle on the simulator at 0 is facing east, in the experiments the sonar was facing zero degrees in its frame, which is 90 in the particles' reference frame
+    data.angle = 90 # the angle on the simulator at 0 is facing east, in the experiments the sonar was facing zero degrees in its frame, which is 90 in the particles' reference frame
     action.publish(data)
 
 def create_subscribers():
