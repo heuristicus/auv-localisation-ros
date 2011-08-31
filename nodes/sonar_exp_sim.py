@@ -63,6 +63,7 @@ class ExpSonar:
                 data.next = point(self.mv[i][0], self.mv[i][1])
                 data.angle = 0
                 data.ranges = map(float, f.read().split(' '))
+                data.actual = point(p[0], p[1])
                 self.pub.publish(data)
             except IOError:
                 print 'file %s does not exist'%(fname)
